@@ -28,7 +28,12 @@ type mysql struct {
 	DbUser   string `toml:"users"`
 	DbPasswd string `toml:"passwd"`
 }
-
+type logs struct {
+	MaxSize    int    `toml:"maxsize"`
+	MaxBackups int    `toml:"backups"`
+	MaxAge     int    `toml:"day"`
+	Level      string `toml:"level"`
+}
 type main struct {
 	SwanApiUrl               string        `toml:"api_url"`
 	SwanApiKey               string        `toml:"api_key"`
@@ -47,6 +52,7 @@ type Configuration struct {
 	Aria2   aria2 `toml:"aria2"`
 	Main    main  `toml:"main"`
 	Mysql   mysql `toml:"mysql"`
+	Logs    logs  `toml:"logs"`
 }
 
 var config *Configuration
@@ -66,7 +72,9 @@ func requiredFieldsAreGiven(metaData toml.MetaData) bool {
 		{"lotus"},
 		{"aria2"},
 		{"main"},
+		{"mysql"},
 		{"bid"},
+		{"logs"},
 
 		{"lotus", "client_api_url"},
 		{"lotus", "market_api_url"},
@@ -91,6 +99,11 @@ func requiredFieldsAreGiven(metaData toml.MetaData) bool {
 		{"mysql", "dbname"},
 		{"mysql", "users"},
 		{"mysql", "passwd"},
+
+		{"logs", "maxsize"},
+		{"logs", "backups"},
+		{"logs", "day"},
+		{"logs", "level"},
 
 		{"bid", "bid_mode"},
 		{"bid", "expected_sealing_time"},

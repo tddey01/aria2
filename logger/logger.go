@@ -1,10 +1,8 @@
 package logger
 
 import (
-	"encoding/json"
 	"fmt"
 	config1 "github.com/tddey01/aria2/config"
-	"io/ioutil"
 	"path"
 	"path/filepath"
 	"runtime"
@@ -28,7 +26,13 @@ func InitLog() *Logger {
 	defer l.Unlock()
 	if Log == nil {
 
-		config := readLogConfig()
+		//config := readLogConfig()
+		config := &TLogConfig{
+			MaxSize:    config1.GetConfig().Logs.MaxSize,
+			MaxBackups: config1.GetConfig().Logs.MaxBackups,
+			MaxAge:     config1.GetConfig().Logs.MaxAge,
+			Level:      config1.GetConfig().Logs.Level,
+		}
 
 		Log = &Logger{}
 		Log.Logger = logrus.New()
@@ -66,34 +70,39 @@ type TLogConfig struct {
 }
 
 func readLogConfig() *TLogConfig {
-	filepath := "./config/log.json"
-	content, err := ioutil.ReadFile(filepath)
-	if err != nil {
-		fmt.Printf("read log config1 failed, err = %v\n", err)
-		fmt.Printf("will use default log config\n")
-		return &TLogConfig{
-			MaxSize:    1024,
-			MaxBackups: 10,
-			MaxAge:     7,
-			Level:      "DEBUG",
-		}
+	//filepath := ".log.json"
+	//content, err := ioutil.ReadFile(filepath)
+	//if err != nil {
+	//	fmt.Printf("read log config1 failed, err = %v\n", err)
+	//	fmt.Printf("will use default log config\n")
+	//	return &TLogConfig{
+	//		MaxSize:    1024,
+	//		MaxBackups: 10,
+	//		MaxAge:     7,
+	//		Level:      "DEBUG",
+	//	}
+	//}
+	//
+	//config := &TLogConfig{}
+	//d := json.NewDecoder(strings.NewReader(string(content)))
+	//d.UseNumber()
+	//err = d.Decode(config)
+	//if err != nil {
+	//	fmt.Printf("invalid log config1, err = %v\n", err)
+	//	fmt.Printf("will use default log config1\n")
+	//	return &TLogConfig{
+	//		MaxSize:    1024,
+	//		MaxBackups: 10,
+	//		MaxAge:     7,
+	//		Level:      "DEBUG",
+	//	}
+	//}
+	config := &TLogConfig{
+		MaxSize:    config1.GetConfig().Logs.MaxSize,
+		MaxBackups: config1.GetConfig().Logs.MaxBackups,
+		MaxAge:     config1.GetConfig().Logs.MaxAge,
+		Level:      config1.GetConfig().Logs.Level,
 	}
-
-	config := &TLogConfig{}
-	d := json.NewDecoder(strings.NewReader(string(content)))
-	d.UseNumber()
-	err = d.Decode(config)
-	if err != nil {
-		fmt.Printf("invalid log config1, err = %v\n", err)
-		fmt.Printf("will use default log config1\n")
-		return &TLogConfig{
-			MaxSize:    1024,
-			MaxBackups: 10,
-			MaxAge:     7,
-			Level:      "DEBUG",
-		}
-	}
-
 	return config
 }
 
