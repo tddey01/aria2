@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/tddey01/aria2/comm"
 	"github.com/tddey01/aria2/routers"
+	"github.com/tddey01/aria2/service"
 	"os"
 	"strconv"
 
@@ -25,7 +26,7 @@ func main() {
 	case "version":
 		printVersion()
 	case "daemon":
-		//service.AdminOfflineDeal()
+		service.AdminOfflineDeal()
 		createHttpServer()
 	default:
 		printUsage()
