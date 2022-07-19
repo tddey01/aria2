@@ -138,6 +138,9 @@ func (aria2Service *Aria2Service) CheckDownloadStatus4Deal(aria2Client *Aria2Cli
 		log.Info(deal,"下载完成",fileSizeDownloaded)
 		log.Info(deal.FileSize, "==" ,fileSizeDownloaded)
 		if fileSizeDownloaded >= 0 {
+			if err := model.UpdateSetDownload2(deal);err !=nil{
+				return
+			}
 			log.Info(deal, DEAL_STATUS_DOWNLOADED, &filePath, "download gid:"+gid)
 		} else {
 			log.Info(deal, DEAL_STATUS_DOWNLOAD_FAILED, &filePath, "file not found on its download path", "download gid:"+gid)
