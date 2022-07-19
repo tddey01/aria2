@@ -1,4 +1,4 @@
-package models
+package model
 
 import orm "github.com/tddey01/aria2/drive/mysql"
 

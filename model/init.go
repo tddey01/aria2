@@ -1,4 +1,4 @@
-package comm
+package model
 
 import "github.com/tddey01/aria2/logger"
 

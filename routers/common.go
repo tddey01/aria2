@@ -1,8 +1,8 @@
 package routers
 
 import (
-	"github.com/tddey01/aria2/comm"
-	"github.com/tddey01/aria2/models"
+	"github.com/tddey01/aria2/model"
+	"github.com/tddey01/aria2/service"
 	"net/http"
 	"runtime"
 
@@ -10,8 +10,8 @@ import (
 )
 
 func HostManager(router *gin.RouterGroup) {
-	router.GET(comm.URL_HOST_GET_HOST_INFO)
-	router.GET(comm.URL_HOST_GET_HOST_INFO, GetSwanMinerVersion)
+	router.GET(service.URL_HOST_GET_HOST_INFO)
+	router.GET(service.URL_HOST_GET_HOST_INFO, GetSwanMinerVersion)
 }
 
 func GetSwanMinerVersion(c *gin.Context) {
@@ -22,9 +22,9 @@ func GetSwanMinerVersion(c *gin.Context) {
 	})
 }
 
-func getSwanMinerHostInfo() *models.HostInfo {
-	info := new(models.HostInfo)
-	info.SwanMinerVersion = comm.GetVersion()
+func getSwanMinerHostInfo() *model.HostInfo {
+	info := new(model.HostInfo)
+	info.SwanMinerVersion = service.GetVersion()
 	info.OperatingSystem = runtime.GOOS
 	info.Architecture = runtime.GOARCH
 	info.CPUnNumber = runtime.NumCPU()

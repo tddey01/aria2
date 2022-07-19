@@ -1,4 +1,4 @@
-package models
+package model
 
 type HostInfo struct {
 	SwanMinerVersion string `json:"swan_miner_version"`

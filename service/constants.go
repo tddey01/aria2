@@ -1,4 +1,6 @@
-package constants
+package service
+
+import "fmt"
 
 const (
 	EMPTY_STRING         = ""
@@ -72,4 +74,27 @@ const (
 	DURATION_MAX = 1540000
 
 	HTTP_API_TIMEOUT_SECOND = 30
+	URL_HOST_GET_COMMON    = "/common"
+	URL_HOST_GET_HOST_INFO = "/miner/host/info"
+
+	ERROR_LAUNCH_FAILED   = "Swan provider launch failed."
+	INFO_ON_HOW_TO_CONFIG = "For more information about how to config, please check https://docs.filswan.com/run-swan-provider/config-swan-provider"
+
+	UPDATE_OFFLINE_DEAL_STATUS_FAIL = "failed to update offline deal status"
+	NOT_UPDATE_OFFLINE_DEAL_STATUS  = "no need to update deal status in swan"
 )
+
+const (
+	MajorVersion = 2
+	MinorVersion = 5
+	FixVersion   = 0
+	CommitHash   = ""
+)
+
+func GetVersion() string {
+	if CommitHash != "" {
+		return fmt.Sprintf("swan-miner-v%v.%v.%v-%s", MajorVersion, MinorVersion, FixVersion, CommitHash)
+	} else {
+		return fmt.Sprintf("swan-miner-v%v.%v.%v", MajorVersion, MinorVersion, FixVersion)
+	}
+}

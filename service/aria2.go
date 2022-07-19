@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"github.com/tddey01/aria2/comm"
 	"github.com/tddey01/aria2/config"
-	"github.com/tddey01/aria2/models"
+	"github.com/tddey01/aria2/model"
 	"net/url"
 	"os"
 	"path/filepath"
@@ -36,7 +36,7 @@ func GetAria2Service() *Aria2Service {
 	return aria2Service
 }
 
-func (aria2Service *Aria2Service) CheckDownloadStatus4Deal(aria2Client *client.Aria2Client, deal *models.FilSwan, gid string) {
+func (aria2Service *Aria2Service) CheckDownloadStatus4Deal(aria2Client *client.Aria2Client, deal *model.FilSwan, gid string) {
 	aria2Status := aria2Client.GetDownloadStatus(gid)
 	if aria2Status == nil {
 		log.Info(deal, DEAL_STATUS_DOWNLOAD_FAILED, "get download status failed for gid:"+gid, "no response from aria2")
@@ -92,14 +92,14 @@ func (aria2Service *Aria2Service) CheckDownloadStatus4Deal(aria2Client *client.A
 	}
 }
 
-func (aria2Service *Aria2Service) StartDownload4Deal(deal *models.FilSwan, aria2Client *client.Aria2Client) {
+func (aria2Service *Aria2Service) StartDownload4Deal(deal *model.FilSwan, aria2Client *client.Aria2Client) {
 	log.Info(deal, "start downloading")
 	urlInfo, err := url.Parse(deal.DownloadUrl)
 	if err != nil {
 		log.Info(deal, DEAL_STATUS_DOWNLOAD_FAILED, "parse source file url error,", err.Error())
 		return
 	}
-	if err = models.UpdateSetDownload1(deal); err != nil {
+	if err = model.UpdateSetDownload1(deal); err != nil {
 		log.Error("改状态失败")
 		return
 	}
@@ -137,7 +137,7 @@ func (aria2Service *Aria2Service) StartDownload4Deal(deal *models.FilSwan, aria2
 }
 
 func (aria2Service *Aria2Service) StartDownload(aria2Client *client.Aria2Client) {
-	downloadingDeals, err := models.GetAll()
+	downloadingDeals, err := model.GetAll()
 	if err != nil {
 		return
 	}
@@ -148,7 +148,7 @@ func (aria2Service *Aria2Service) StartDownload(aria2Client *client.Aria2Client)
 	}
 
 	for i := 1; i <= config.GetConfig().Aria2.Aria2Task-countDownloadingDeals; i++ {
-		deal2Download, err := models.GetFindOne()
+		deal2Download, err := model.GetFindOne()
 		if err != nil {
 			log.Error(err)
 			break

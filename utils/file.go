@@ -4,13 +4,11 @@ import (
 	"bufio"
 	"errors"
 	"fmt"
+	"github.com/tddey01/aria2/service"
 	"io"
 	"io/ioutil"
 	"os"
 	"path/filepath"
-
-	"github.com/tddey01/aria2/constants"
-
 )
 
 func IsFileExists(filePath, fileName string) bool {
@@ -63,16 +61,16 @@ func GetPathType(dirFullPath string) int {
 
 	if err != nil {
 		log.Info(err)
-		return constants.PATH_TYPE_NOT_EXIST
+		return service.PATH_TYPE_NOT_EXIST
 	}
 
 	switch mode := fi.Mode(); {
 	case mode.IsDir():
-		return constants.PATH_TYPE_DIR
+		return service.PATH_TYPE_DIR
 	case mode.IsRegular():
-		return constants.PATH_TYPE_FILE
+		return service.PATH_TYPE_FILE
 	default:
-		return constants.PATH_TYPE_UNKNOWN
+		return service.PATH_TYPE_UNKNOWN
 	}
 }
 
@@ -245,7 +243,7 @@ func IsDirExists(dir string) bool {
 		return false
 	}
 
-	if GetPathType(dir) != constants.PATH_TYPE_DIR {
+	if GetPathType(dir) != service.PATH_TYPE_DIR {
 		return false
 	}
 
