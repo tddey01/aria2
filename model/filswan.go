@@ -11,7 +11,7 @@ type FilSwan struct {
 	FileActive  string `gorm:"column:file_active" json:"file_active"`
 }
 
-func GetAll() (ret []FilSwan, err error) {
+func GetAll() (ret *[]FilSwan, err error) {
 	sqlx := `select  * from  filswan where file_active=0`
 	if err = orm.Eloquent.Raw(sqlx).Scan(&ret).Error; err != nil {
 		return
@@ -43,10 +43,12 @@ func UpdateSetDownload3(msg *FilSwan) (err error) {
 	return
 }
 
-func GetFindOne() (ret *FilSwan, err error) {
+func GetFindOne() (*FilSwan, error) {
+	sk  :=FilSwan{}
+
 	sqlx := `select * from filswan where file_active=0 limit 0,1`
-	if err = orm.Eloquent.Raw(sqlx).Scan(&ret).Error; err != nil {
-		return
+	if err := orm.Eloquent.Raw(sqlx).Scan(&sk).Error; err != nil {
+		return nil,nil
 	}
-	return
+	return &sk ,nil
 }
