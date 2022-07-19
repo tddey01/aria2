@@ -5,8 +5,8 @@ import (
 	"github.com/tddey01/aria2/config"
 	"time"
 
-	"github.com/tddey01/aria2/lib/client"
-	"github.com/tddey01/aria2/lib/utils"
+	"github.com/tddey01/aria2/client"
+	"github.com/tddey01/aria2/utils"
 )
 
 const ARIA2_TASK_STATUS_ERROR = "error"
