@@ -46,7 +46,7 @@ func UpdateSetDownload3(msg *FilSwan) (err error) {
 func GetFindOne() (*FilSwan, error) {
 	sk := FilSwan{}
 
-	sqlx := `select * from filswan where file_active=0  ANd limit 0,1`
+	sqlx := `select * from filswan where file_active=0   limit 0,1`
 	if err := orm.Eloquent.Raw(sqlx).Scan(&sk).Error; err != nil {
 		return nil, nil
 	}
