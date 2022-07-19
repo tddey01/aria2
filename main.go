@@ -2,15 +2,12 @@ package main
 
 import (
 	"fmt"
+	"github.com/gin-gonic/gin"
 	"github.com/tddey01/aria2/routers"
 	"github.com/tddey01/aria2/service"
 	"log"
 	"os"
 	"strconv"
-	"time"
-
-	"github.com/gin-gonic/gin"
-	cors "github.com/itsjamie/gin-cors"
 )
 
 const  	URL_HOST_GET_COMMON    = "/common"
@@ -54,15 +51,15 @@ func createHttpServer() {
 	//logs.GetLogger().Info("release mode:", config.GetConfig().Release)
 	gin.SetMode(gin.ReleaseMode)
 	r := gin.Default()
-	r.Use(cors.Middleware(cors.Config{
-		Origins:         "*",
-		Methods:         "GET, PUT, POST, DELETE",
-		RequestHeaders:  "Origin, Authorization, Content-Type",
-		ExposedHeaders:  "",
-		MaxAge:          50 * time.Second,
-		Credentials:     true,
-		ValidateHeaders: false,
-	}))
+	//r.Use(cors.Middleware(cors.Config{
+	//	Origins:         "*",
+	//	Methods:         "GET, PUT, POST, DELETE",
+	//	RequestHeaders:  "Origin, Authorization, Content-Type",
+	//	ExposedHeaders:  "",
+	//	MaxAge:          50 * time.Second,
+	//	Credentials:     true,
+	//	ValidateHeaders: false,
+	//}))
 
 	v1 := r.Group("/api/v1")
 	routers.HostManager(v1.Group(URL_HOST_GET_COMMON))
