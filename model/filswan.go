@@ -12,8 +12,9 @@ type FilSwan struct {
 	//FileError   string `gorm:"column:file_error" json:"file_error"`
 }
 
-func GetAll() (ret []*FilSwan, err error) {
-	sqlx := `select  * from  filswan where file_active=0`
+func
+GetAll() (ret []*FilSwan, err error) {
+	sqlx := `select  * from  filswan where file_active=0 limit 0,9`
 	if err = orm.Eloquent.Raw(sqlx).Scan(&ret).Error; err != nil {
 		return
 	}
