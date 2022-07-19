@@ -1,4 +1,4 @@
-package client
+package service
 
 import (
 	"encoding/json"
@@ -125,14 +125,14 @@ func (aria2Client *Aria2Client) DownloadFile(uri string, outDir, outFilename str
 
 	response, err := HttpPostNoToken(aria2Client.serverUrl, payload)
 	if err != nil {
-		log.Error(err)
+	log.Error(err)
 		return nil
 	}
 
 	aria2Download := &Aria2Download{}
 	err = json.Unmarshal(response, aria2Download)
 	if err != nil {
-		log.Error(err)
+log.Error(err)
 		return nil
 	}
 
@@ -157,14 +157,14 @@ func (aria2Client *Aria2Client) GetDownloadStatus(gid string) *Aria2Status {
 	payload := aria2Client.GenPayload4Status(gid)
 	response, err := HttpPostNoToken(aria2Client.serverUrl, payload)
 	if err != nil {
-		log.Error(err)
+	log.Error(err)
 		return nil
 	}
 
 	aria2Status := &Aria2Status{}
 	err = json.Unmarshal(response, aria2Status)
 	if err != nil {
-		log.Error(err)
+log.Error(err)
 		return nil
 	}
 

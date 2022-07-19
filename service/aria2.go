@@ -11,7 +11,6 @@ import (
 	"strings"
 	"time"
 
-	"github.com/tddey01/aria2/client"
 	"github.com/tddey01/aria2/utils"
 )
 
@@ -35,7 +34,7 @@ func GetAria2Service() *Aria2Service {
 	return aria2Service
 }
 
-func (aria2Service *Aria2Service) CheckDownloadStatus4Deal(aria2Client *client.Aria2Client, deal *model.FilSwan, gid string) {
+func (aria2Service *Aria2Service) CheckDownloadStatus4Deal(aria2Client *Aria2Client, deal *model.FilSwan, gid string) {
 	aria2Status := aria2Client.GetDownloadStatus(gid)
 	if aria2Status == nil {
 		log.Info(deal, DEAL_STATUS_DOWNLOAD_FAILED, "get download status failed for gid:"+gid, "no response from aria2")
@@ -91,7 +90,7 @@ func (aria2Service *Aria2Service) CheckDownloadStatus4Deal(aria2Client *client.A
 	}
 }
 
-func (aria2Service *Aria2Service) StartDownload4Deal(deal *model.FilSwan, aria2Client *client.Aria2Client) {
+func (aria2Service *Aria2Service) StartDownload4Deal(deal *model.FilSwan, aria2Client *Aria2Client) {
 	log.Info(deal, "start downloading")
 	urlInfo, err := url.Parse(deal.DownloadUrl)
 	if err != nil {
@@ -135,7 +134,7 @@ func (aria2Service *Aria2Service) StartDownload4Deal(deal *model.FilSwan, aria2C
 	aria2Service.CheckDownloadStatus4Deal(aria2Client, deal, aria2Download.Gid)
 }
 
-func (aria2Service *Aria2Service) StartDownload(aria2Client *client.Aria2Client) {
+func (aria2Service *Aria2Service) StartDownload(aria2Client *Aria2Client) {
 	downloadingDeals, err := model.GetAll()
 	if err != nil {
 		return

@@ -5,7 +5,6 @@ import (
 	"github.com/tddey01/aria2/config"
 	"time"
 
-	"github.com/tddey01/aria2/client"
 	"github.com/tddey01/aria2/utils"
 )
 
@@ -38,7 +37,7 @@ const ONCHAIN_DEAL_STATUS_AWAITING = "StorageDealAwaitingPreCommit"
 const LOTUS_IMPORT_NUMNBER = 20 //Max number of deals to be imported at a time
 const LOTUS_SCAN_NUMBER = 100   //Max number of deals to be scanned at a time
 
-var aria2Client *client.Aria2Client
+var aria2Client *Aria2Client
 
 var aria2Service *Aria2Service
 
@@ -51,7 +50,7 @@ func AdminOfflineDeal() {
 	go aria2StartDownload()
 }
 
-func SetAndCheckAria2Config() *client.Aria2Client {
+func SetAndCheckAria2Config() *Aria2Client {
 	aria2DownloadDir := config.GetConfig().Aria2.Aria2DownloadDir
 	aria2Host := config.GetConfig().Aria2.Aria2Host
 	aria2Port := config.GetConfig().Aria2.Aria2Port
@@ -66,7 +65,7 @@ func SetAndCheckAria2Config() *client.Aria2Client {
 		log.Fatal("please set config:aria2->aria2_host")
 	}
 
-	aria2Client = client.GetAria2Client(aria2Host, aria2Secret, aria2Port)
+	aria2Client = GetAria2Client(aria2Host, aria2Secret, aria2Port)
 
 	return aria2Client
 }

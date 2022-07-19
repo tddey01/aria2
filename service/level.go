@@ -1,14 +1,15 @@
-package client
+package service
 
 import (
-	"github.com/tddey01/aria2/utils"
 	"github.com/syndtr/goleveldb/leveldb"
+	"github.com/tddey01/aria2/client"
+	"github.com/tddey01/aria2/utils"
 )
 
 func LevelDbPut(dbFilepath, key string, value interface{}) error {
 	db, err := leveldb.OpenFile(dbFilepath, nil)
 	if err != nil {
-		log.Error(err)
+		client.log.Error(err)
 		return err
 	}
 	defer db.Close()
@@ -17,14 +18,14 @@ func LevelDbPut(dbFilepath, key string, value interface{}) error {
 	switch valType := value.(type) {
 	case string:
 		valStr = valType
-		log.Info("this is already string")
+		client.log.Info("this is already string")
 	default:
 		valStr = utils.ToJson(value)
 	}
 
 	err = db.Put([]byte(key), []byte(valStr), nil)
 	if err != nil {
-		log.Error(err)
+		client.log.Error(err)
 		return err
 	}
 
@@ -34,14 +35,14 @@ func LevelDbPut(dbFilepath, key string, value interface{}) error {
 func LevelDbGet(dbFilepath, key string) ([]byte, error) {
 	db, err := leveldb.OpenFile(dbFilepath, nil)
 	if err != nil {
-		log.Error(err)
+		client.log.Error(err)
 		return nil, err
 	}
 	defer db.Close()
 
 	data, err := db.Get([]byte(key), nil)
 	if err != nil {
-		log.Error(err)
+		client.log.Error(err)
 		return nil, err
 	}
 
@@ -51,14 +52,14 @@ func LevelDbGet(dbFilepath, key string) ([]byte, error) {
 func LevelDbDelete(dbFilepath, key, value string) error {
 	db, err := leveldb.OpenFile(dbFilepath, nil)
 	if err != nil {
-		log.Error(err)
+		client.log.Error(err)
 		return err
 	}
 	defer db.Close()
 
 	err = db.Delete([]byte("key"), nil)
 	if err != nil {
-		log.Error(err)
+		client.log.Error(err)
 		return err
 	}
 
