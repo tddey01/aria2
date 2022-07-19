@@ -16,6 +16,7 @@ type FilSwan struct {
 func
 GetAll() (ret []*FilSwan, err error) {
 	sqlx := `select  * from  filswan where file_active=0  limit 0,9`
+	log.Debug(sqlx)
 	if err = orm.Eloquent.Raw(sqlx).Scan(&ret).Error; err != nil {
 		return
 	}
@@ -23,6 +24,7 @@ GetAll() (ret []*FilSwan, err error) {
 }
 func UpdateSetDownload1(msg *FilSwan) (err error) { // 下载中
 	sqlx := `UPDATE  filswan set  file_active=1 ,locked=1  where data_cid='` + msg.DataCid + `'`
+	log.Debug(sqlx)
 	if err = orm.Eloquent.Exec(sqlx).Error; err != nil {
 		return
 	}
@@ -31,7 +33,8 @@ func UpdateSetDownload1(msg *FilSwan) (err error) { // 下载中
 
 func UpdateSetDownload2(msg *FilSwan) (err error) {
 	sqlx := `UPDATE  filswan set  file_active=2 ,locked=0  where data_cid='` + msg.DataCid + `'`
-	if err = orm.Eloquent.Exec(sqlx).Error; err != nil {
+	log.Debug(sqlx)
+	if err = orm.Eloquent.Debug().Exec(sqlx).Error; err != nil {
 		return
 	}
 	return
@@ -39,6 +42,7 @@ func UpdateSetDownload2(msg *FilSwan) (err error) {
 
 func UpdateSetDownload3(msg *FilSwan) (err error) {
 	sqlx := `UPDATE  filswan set  file_active=3  where data_cid='` + msg.DataCid + `'`
+	log.Debug(sqlx)
 	if err = orm.Eloquent.Exec(sqlx).Error; err != nil {
 		return
 	}
@@ -47,8 +51,8 @@ func UpdateSetDownload3(msg *FilSwan) (err error) {
 
 func GetFindOne() (*FilSwan, error) {
 	sk := FilSwan{}
-
 	sqlx := `select * from filswan where file_active=0   limit 0,1`
+	log.Debug(sqlx)
 	if err := orm.Eloquent.Raw(sqlx).Scan(&sk).Error; err != nil {
 		return nil, nil
 	}
@@ -58,6 +62,7 @@ func GetFindOne() (*FilSwan, error) {
 func GetFindTwo() (*FilSwan, error) {
 	sk := FilSwan{}
 	sqlx := `select * from filswan where file_active=2  ANd limit 0,1`
+	log.Debug(sqlx)
 	if err := orm.Eloquent.Raw(sqlx).Scan(&sk).Error; err != nil {
 		return nil, nil
 	}
