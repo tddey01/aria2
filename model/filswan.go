@@ -10,6 +10,7 @@ type FilSwan struct {
 	DownloadUrl string `gorm:"column:download_url" json:"download_url"`
 	FileActive  string `gorm:"column:file_active" json:"file_active"`
 	//FileError   string `gorm:"column:file_error" json:"file_error"`
+	Locked   string `gorm:"column:locked" json:"locked"`
 }
 
 func
