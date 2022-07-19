@@ -198,7 +198,7 @@ func (aria2Service *Aria2Service) StartDownload(aria2Client *Aria2Client) {
 			log.Error(err)
 			break
 		}
-		
+
 		if deal2Download == nil {
 			log.Info("No offline deal to download")
 			break
