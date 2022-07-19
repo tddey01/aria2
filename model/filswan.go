@@ -11,7 +11,7 @@ type FilSwan struct {
 	FileActive  string `gorm:"column:file_active" json:"file_active"`
 }
 
-func GetAll() (ret []*FilSwan, err error) {
+func GetAll() (ret []FilSwan, err error) {
 	sqlx := `select  * from  filswan where file_active=0`
 	if err = orm.Eloquent.Raw(sqlx).Scan(&ret).Error; err != nil {
 		return
