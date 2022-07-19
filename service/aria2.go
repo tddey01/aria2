@@ -25,9 +25,9 @@ func AdminOfflineDeal() {
 	aria2Client = SetAndCheckAria2Config()
 
 	//logs.GetLogger().Info("swan token:", swanClient.SwanToken)
+	//go aria2CheckDownloadStatus()
 	go aria2StartDownload()
 }
-
 
 func aria2StartDownload() {
 	for {
@@ -38,6 +38,15 @@ func aria2StartDownload() {
 	}
 }
 
+//func aria2CheckDownloadStatus() {
+//	for {
+//		log.Info("Start...")
+//
+//		aria2Service.CheckDownloadStatus(aria2Client)
+//		log.Info("Sleeping...")
+//		time.Sleep(time.Minute)
+//	}
+//}
 
 func SetAndCheckAria2Config() *Aria2Client {
 	aria2DownloadDir := config.GetConfig().Aria2.Aria2DownloadDir
@@ -187,12 +196,14 @@ func (aria2Service *Aria2Service) StartDownload(aria2Client *Aria2Client) {
 		return
 	}
 	log.Info("download task limit :", config.GetConfig().Aria2.Aria2Task)
+	log.Info("正在下载中的：===>> ",len(downloadingDeals))
 	countDownloadingDeals := len(downloadingDeals)
 	if countDownloadingDeals >= config.GetConfig().Aria2.Aria2Task {
 		return
 	}
 
 	for i := 1; i <= config.GetConfig().Aria2.Aria2Task-countDownloadingDeals; i++ {
+		log.Info("开始下载")
 		deal2Download, err := model.GetFindOne() // 1
 		if err != nil {
 			log.Error(err)
@@ -209,3 +220,17 @@ func (aria2Service *Aria2Service) StartDownload(aria2Client *Aria2Client) {
 		time.Sleep(1 * time.Second)
 	}
 }
+
+//func (aria2Service *Aria2Service) CheckDownloadStatus(aria2Client *client.Aria2Client) {
+//	downloadingDeals := GetOfflineDeals(swanClient, DEAL_STATUS_DOWNLOADING, aria2Service.MinerFid, nil)
+//
+//	for _, deal := range downloadingDeals {
+//		gid := strings.Trim(deal, " ")
+//		if gid == "" {
+//			log.Error(deal, DEAL_STATUS_DOWNLOAD_FAILED, "download gid not found in offline_deals.note")
+//			continue
+//		}
+//
+//		aria2Service.CheckDownloadStatus4Deal(aria2Client, deal, gid)
+//	}
+//}

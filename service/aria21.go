@@ -132,7 +132,7 @@ func (aria2Client *Aria2Client) DownloadFile(uri string, outDir, outFilename str
 	aria2Download := &Aria2Download{}
 	err = json.Unmarshal(response, aria2Download)
 	if err != nil {
-log.Error(err)
+     log.Error(err)
 		return nil
 	}
 
