@@ -1,10 +1,11 @@
-package web
+package client
 
 import (
 	"bytes"
 	"crypto/tls"
 	"encoding/json"
 	"fmt"
+	"github.com/tddey01/aria2/client/web"
 	"io"
 	"io/ioutil"
 	"mime/multipart"
@@ -23,7 +24,7 @@ const HTTP_CONTENT_TYPE_JSON = "application/json; charset=UTF-8"
 func HttpPostNoToken(uri string, params interface{}) ([]byte, error) {
 	response, err := HttpRequest(http.MethodPost, uri, "", params, nil)
 	if err != nil {
-		log.Error(err)
+		web.log.Error(err)
 		return nil, err
 	}
 	return response, nil
@@ -32,7 +33,7 @@ func HttpPostNoToken(uri string, params interface{}) ([]byte, error) {
 func HttpPost(uri, tokenString string, params interface{}) ([]byte, error) {
 	response, err := HttpRequest(http.MethodPost, uri, tokenString, params, nil)
 	if err != nil {
-		log.Error(err)
+		web.log.Error(err)
 		return nil, err
 	}
 	return response, nil
@@ -41,7 +42,7 @@ func HttpPost(uri, tokenString string, params interface{}) ([]byte, error) {
 func HttpGetNoToken(uri string, params interface{}) ([]byte, error) {
 	response, err := HttpRequest(http.MethodGet, uri, "", params, nil)
 	if err != nil {
-		log.Error(err)
+		web.log.Error(err)
 		return nil, err
 	}
 	return response, nil
@@ -50,7 +51,7 @@ func HttpGetNoToken(uri string, params interface{}) ([]byte, error) {
 func HttpGetNoTokenTimeout(uri string, params interface{}, timeoutSecond *int) ([]byte, error) {
 	response, err := HttpRequest(http.MethodGet, uri, "", params, timeoutSecond)
 	if err != nil {
-		log.Error()
+		web.log.Error()
 		return nil, err
 	}
 	return response, nil
@@ -59,7 +60,7 @@ func HttpGetNoTokenTimeout(uri string, params interface{}, timeoutSecond *int) (
 func HttpGet(uri, tokenString string, params interface{}) ([]byte, error) {
 	response, err := HttpRequest(http.MethodGet, uri, tokenString, params, nil)
 	if err != nil {
-		log.Error(err)
+		web.log.Error(err)
 		return nil, err
 	}
 	return response, nil
@@ -68,7 +69,7 @@ func HttpGet(uri, tokenString string, params interface{}) ([]byte, error) {
 func HttpPut(uri, tokenString string, params interface{}) ([]byte, error) {
 	response, err := HttpRequest(http.MethodPut, uri, tokenString, params, nil)
 	if err != nil {
-		log.Error(err)
+		web.log.Error(err)
 		return nil, err
 	}
 	return response, nil
@@ -77,7 +78,7 @@ func HttpPut(uri, tokenString string, params interface{}) ([]byte, error) {
 func HttpDelete(uri, tokenString string, params interface{}) ([]byte, error) {
 	response, err := HttpRequest(http.MethodDelete, uri, tokenString, params, nil)
 	if err != nil {
-		log.Error(err)
+		web.log.Error(err)
 		return nil, err
 	}
 	return response, nil
@@ -91,20 +92,20 @@ func HttpRequest(httpMethod, uri, tokenString string, params interface{}, timeou
 	case io.Reader:
 		request, err = http.NewRequest(httpMethod, uri, params)
 		if err != nil {
-			log.Error(err)
+			web.log.Error(err)
 			return nil, err
 		}
 		request.Header.Set("Content-Type", HTTP_CONTENT_TYPE_FORM)
 	default:
 		jsonReq, errJson := json.Marshal(params)
 		if errJson != nil {
-			log.Error(errJson)
+			web.log.Error(errJson)
 			return nil, errJson
 		}
 
 		request, err = http.NewRequest(httpMethod, uri, bytes.NewBuffer(jsonReq))
 		if err != nil {
-			log.Error(err)
+			web.log.Error(err)
 			return nil, err
 		}
 		request.Header.Set("Content-Type", HTTP_CONTENT_TYPE_JSON)
@@ -125,7 +126,7 @@ func HttpRequest(httpMethod, uri, tokenString string, params interface{}, timeou
 	response, err := client.Do(request)
 
 	if err != nil {
-		log.Error(err)
+		web.log.Error(err)
 		return nil, err
 	}
 
@@ -133,19 +134,19 @@ func HttpRequest(httpMethod, uri, tokenString string, params interface{}, timeou
 
 	if response.StatusCode != http.StatusOK {
 		err := fmt.Errorf("http status: %s, code:%d, url:%s", response.Status, response.StatusCode, uri)
-		log.Error(err)
+		web.log.Error(err)
 		switch response.StatusCode {
 		case http.StatusNotFound:
-			log.Error("please check your url:", uri)
+			web.log.Error("please check your url:", uri)
 		case http.StatusUnauthorized:
-			log.Error("Please check your token:", tokenString)
+			web.log.Error("Please check your token:", tokenString)
 		}
 		return nil, err
 	}
 
 	responseBody, err := ioutil.ReadAll(response.Body)
 	if err != nil {
-		log.Error(err)
+		web.log.Error(err)
 		return nil, err
 	}
 
@@ -165,7 +166,7 @@ func HttpPostFile(url string, tokenString string, paramTexts map[string]string, 
 func HttpRequestFile(httpMethod, url string, tokenString string, paramTexts map[string]string, paramFilename, paramFilepath string) (string, error) {
 	filename, fileContent, err := utils.ReadFile(paramFilepath)
 	if err != nil {
-		log.Info(err)
+		web.log.Info(err)
 		return "", err
 	}
 
@@ -175,7 +176,7 @@ func HttpRequestFile(httpMethod, url string, tokenString string, paramTexts map[
 	fileWriter, err := bodyWriter.CreateFormFile(paramFilename, filename)
 	if err != nil {
 		bodyWriter.Close()
-		log.Info(err)
+		web.log.Info(err)
 		return "", err
 	}
 
@@ -185,7 +186,7 @@ func HttpRequestFile(httpMethod, url string, tokenString string, paramTexts map[
 		err = bodyWriter.WriteField(key, val)
 		if err != nil {
 			bodyWriter.Close()
-			log.Info(err)
+			web.log.Info(err)
 			return "", err
 		}
 	}
@@ -194,7 +195,7 @@ func HttpRequestFile(httpMethod, url string, tokenString string, paramTexts map[
 
 	request, err := http.NewRequest(httpMethod, url, bodyBuf)
 	if err != nil {
-		log.Error(err)
+		web.log.Error(err)
 		return "", nil
 	}
 
@@ -206,7 +207,7 @@ func HttpRequestFile(httpMethod, url string, tokenString string, paramTexts map[
 	client := &http.Client{}
 	response, err := client.Do(request)
 	if err != nil {
-		log.Error(err)
+		web.log.Error(err)
 		return "", nil
 	}
 
@@ -214,19 +215,19 @@ func HttpRequestFile(httpMethod, url string, tokenString string, paramTexts map[
 
 	if response.StatusCode != http.StatusOK {
 		err := fmt.Errorf("http status:%s, code:%d, url:%s", response.Status, response.StatusCode, url)
-		log.Error(err)
+		web.log.Error(err)
 		switch response.StatusCode {
 		case http.StatusNotFound:
-			log.Error("please check your url:", url)
+			web.log.Error("please check your url:", url)
 		case http.StatusUnauthorized:
-			log.Error("Please check your token:", tokenString)
+			web.log.Error("Please check your token:", tokenString)
 		}
 		return "", err
 	}
 
 	responseBody, err := ioutil.ReadAll(response.Body)
 	if err != nil {
-		log.Error(err)
+		web.log.Error(err)
 		return "", err
 	}
 
@@ -238,7 +239,7 @@ func HttpRequestFile(httpMethod, url string, tokenString string, paramTexts map[
 func HttpUploadFileByStream(uri, filefullpath string) ([]byte, error) {
 	fileReader, err := os.Open(filefullpath)
 	if err != nil {
-		log.Error(err)
+		web.log.Error(err)
 		return nil, err
 	}
 
@@ -264,7 +265,7 @@ func HttpUploadFileByStream(uri, filefullpath string) ([]byte, error) {
 
 	response, err := http.Post(uri, contentType, body)
 	if err != nil {
-		log.Error(err)
+		web.log.Error(err)
 		return nil, nil
 	}
 
@@ -272,17 +273,17 @@ func HttpUploadFileByStream(uri, filefullpath string) ([]byte, error) {
 
 	if response.StatusCode != http.StatusOK {
 		err := fmt.Errorf("http status:%s, code:%d, url:%s", response.Status, response.StatusCode, uri)
-		log.Error(err)
+		web.log.Error(err)
 		switch response.StatusCode {
 		case http.StatusNotFound:
-			log.Error("please check your url:", uri)
+			web.log.Error("please check your url:", uri)
 		}
 		return nil, err
 	}
 
 	responseBody, err := ioutil.ReadAll(response.Body)
 	if err != nil {
-		log.Error(err)
+		web.log.Error(err)
 		return nil, err
 	}
 
@@ -291,7 +292,7 @@ func HttpUploadFileByStream(uri, filefullpath string) ([]byte, error) {
 	filesInfo := strings.Split(responseStr, "\n")
 	if len(filesInfo) < 4 {
 		err := fmt.Errorf("not enough files info returned, ipfs response:%s", responseStr)
-		log.Error(err)
+		web.log.Error(err)
 		return nil, err
 	}
 	responseStr = filesInfo[3]

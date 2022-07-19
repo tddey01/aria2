@@ -3,8 +3,6 @@ package client
 import (
 	"encoding/json"
 	"fmt"
-
-	"github.com/tddey01/aria2/client/web"
 )
 
 const ADD_URI = "aria2.addUri"
@@ -125,7 +123,7 @@ func (aria2Client *Aria2Client) GenPayload4Download(method string, uri string, o
 func (aria2Client *Aria2Client) DownloadFile(uri string, outDir, outFilename string) *Aria2Download {
 	payload := aria2Client.GenPayload4Download(ADD_URI, uri, outDir, outFilename)
 
-	response, err := web.HttpPostNoToken(aria2Client.serverUrl, payload)
+	response, err := HttpPostNoToken(aria2Client.serverUrl, payload)
 	if err != nil {
 		log.Error(err)
 		return nil
@@ -157,7 +155,7 @@ func (aria2Client *Aria2Client) GenPayload4Status(gid string) Aria2Payload {
 
 func (aria2Client *Aria2Client) GetDownloadStatus(gid string) *Aria2Status {
 	payload := aria2Client.GenPayload4Status(gid)
-	response, err := web.HttpPostNoToken(aria2Client.serverUrl, payload)
+	response, err := HttpPostNoToken(aria2Client.serverUrl, payload)
 	if err != nil {
 		log.Error(err)
 		return nil

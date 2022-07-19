@@ -2,7 +2,6 @@ package service
 
 import (
 	"fmt"
-	"github.com/tddey01/aria2/comm"
 	"github.com/tddey01/aria2/config"
 	"github.com/tddey01/aria2/model"
 	"net/url"
@@ -28,9 +27,9 @@ func GetAria2Service() *Aria2Service {
 
 	_, err := os.Stat(aria2Service.DownloadDir)
 	if err != nil {
-		log.Error(comm.ERROR_LAUNCH_FAILED)
+		log.Error(ERROR_LAUNCH_FAILED)
 		log.Error("Your download directory:", aria2Service.DownloadDir, " not exists.")
-		log.Fatal(comm.INFO_ON_HOW_TO_CONFIG)
+		log.Fatal(INFO_ON_HOW_TO_CONFIG)
 	}
 
 	return aria2Service
