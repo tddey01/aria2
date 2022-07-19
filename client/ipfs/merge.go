@@ -12,7 +12,6 @@ import (
 
 	"github.com/filecoin-project/go-dagaggregator-unixfs"
 	"github.com/filecoin-project/go-dagaggregator-unixfs/lib/rambs"
-	"github.com/tddey01/aria2/lib/logs"
 	"github.com/ipfs/go-blockservice"
 	"github.com/ipfs/go-cid"
 	ipfsapi "github.com/ipfs/go-ipfs-api"
@@ -62,7 +61,7 @@ func MergeFiles2CarFile(apiUrl string, cidStrs []string) (*string, error) {
 	for _, cs := range cidStrs {
 		c, err := cid.Parse(cs)
 		if err != nil {
-			logs.GetLogger().Error("unable to parse '%s': %s", cs, err)
+			log.Error("unable to parse '%s': %s", cs, err)
 			return nil, err
 		}
 		if cset.Visit(c) {
@@ -74,18 +73,18 @@ func MergeFiles2CarFile(apiUrl string, cidStrs []string) (*string, error) {
 	ramDs := merkledag.NewDAGService(blockservice.New(ramBs, exchangeoffline.Exchange(ramBs)))
 	root, entries, err := dagaggregator.Aggregate(ctx, ramDs, toAgg)
 	if err != nil {
-		logs.GetLogger().Error("aggregation failed: %s", err)
+		log.Error("aggregation failed: %s", err)
 		return nil, err
 	}
 
 	if err := writeoutBlocks(ctx, opts, ramBs); err != nil {
-		logs.GetLogger().Error("writing newly created dag to IPFS API failed: %s", err)
+		log.Error("writing newly created dag to IPFS API failed: %s", err)
 		return nil, err
 	}
 
 	akc, _ := ramBs.AllKeysChan(ctx)
 	dataCid := root.String()
-	logs.GetLogger().Info("aggregation finished, aggregateRoot: ", root, ", data cid:", dataCid, ", totalManifestEntries: ", len(entries), ", newIntermediateBlocks: ", len(akc))
+	log.Info("aggregation finished, aggregateRoot: ", root, ", data cid:", dataCid, ", totalManifestEntries: ", len(entries), ", newIntermediateBlocks: ", len(akc))
 	return &dataCid, nil
 }
 

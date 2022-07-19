@@ -9,8 +9,8 @@ import (
 	"time"
 	"unicode"
 
-	"github.com/tddey01/aria2/lib/constants"
-	"github.com/tddey01/aria2/lib/logs"
+	"github.com/tddey01/aria2/constants"
+
 
 	"github.com/dgrijalva/jwt-go"
 
@@ -30,7 +30,7 @@ func GetCurrentUtcSecond() int64 {
 func GetInt64FromStr(numStr string) int64 {
 	num, err := strconv.ParseInt(numStr, 10, 64)
 	if err != nil {
-		logs.GetLogger().Error(err)
+		log.Error(err)
 		return -1
 	}
 
@@ -49,7 +49,7 @@ func GetFloat64FromStr(numStr *string) (float64, error) {
 
 	num, err := strconv.ParseFloat(*numStr, 64)
 	if err != nil {
-		logs.GetLogger().Error(err)
+		log.Error(err)
 		return -1, err
 	}
 
@@ -59,7 +59,7 @@ func GetFloat64FromStr(numStr *string) (float64, error) {
 func GetIntFromStr(numStr string) (int, error) {
 	num, err := strconv.ParseInt(numStr, 10, 32)
 	if err != nil {
-		logs.GetLogger().Error(err)
+		log.Error(err)
 		return -1, err
 	}
 
@@ -83,7 +83,7 @@ func GetByteSizeFromStr(sizeStr string) int64 {
 	numStr = strings.Trim(numStr, " ")
 	size, err := strconv.ParseInt(numStr, 10, 64)
 	if err != nil {
-		logs.GetLogger().Error(err)
+		log.Error(err)
 		return -1
 	}
 	unit := strings.Trim(sizeStr, numStr)
@@ -172,7 +172,7 @@ func GetDecimalFromStr(source string) (*decimal.Decimal, error) {
 		numStr := strings.Trim(words[0], " ")
 		result, err := decimal.NewFromString(numStr)
 		if err != nil {
-			logs.GetLogger().Error(err)
+			log.Error(err)
 			return nil, err
 		}
 		return &result, nil
@@ -286,7 +286,7 @@ func SearchFloat64FromStr(source string) *float64 {
 		numStr := strings.Trim(words[0], " ")
 		result, err := strconv.ParseFloat(numStr, 64)
 		if err != nil {
-			logs.GetLogger().Error(err)
+			log.Error(err)
 			return nil
 		}
 		return &result
@@ -305,7 +305,7 @@ func ConvertPrice2AttoFil(price string) string {
 	}
 	priceAttoFil, err := decimal.NewFromString(fields[0])
 	if err != nil {
-		logs.GetLogger().Error()
+		log.Error()
 		return ""
 	}
 	unit := strings.ToUpper(fields[1])

@@ -12,9 +12,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/tddey01/aria2/lib/client"
-	"github.com/tddey01/aria2/lib/logs"
-	"github.com/tddey01/aria2/lib/utils"
+	"github.com/tddey01/aria2/client"
+	"github.com/tddey01/aria2/utils"
 )
 
 type Aria2Service struct {
@@ -29,9 +28,9 @@ func GetAria2Service() *Aria2Service {
 
 	_, err := os.Stat(aria2Service.DownloadDir)
 	if err != nil {
-		logs.GetLogger().Error(comm.ERROR_LAUNCH_FAILED)
-		logs.GetLogger().Error("Your download directory:", aria2Service.DownloadDir, " not exists.")
-		logs.GetLogger().Fatal(comm.INFO_ON_HOW_TO_CONFIG)
+		log.Error(comm.ERROR_LAUNCH_FAILED)
+		log.Error("Your download directory:", aria2Service.DownloadDir, " not exists.")
+		log.Fatal(comm.INFO_ON_HOW_TO_CONFIG)
 	}
 
 	return aria2Service
@@ -142,7 +141,7 @@ func (aria2Service *Aria2Service) StartDownload(aria2Client *client.Aria2Client)
 	if err != nil {
 		return
 	}
-	logs.GetLogger().Info("download task limit :", config.GetConfig().Aria2.Aria2Task)
+	log.Info("download task limit :", config.GetConfig().Aria2.Aria2Task)
 	countDownloadingDeals := len(downloadingDeals)
 	if countDownloadingDeals >= config.GetConfig().Aria2.Aria2Task {
 		return
@@ -151,7 +150,7 @@ func (aria2Service *Aria2Service) StartDownload(aria2Client *client.Aria2Client)
 	for i := 1; i <= config.GetConfig().Aria2.Aria2Task-countDownloadingDeals; i++ {
 		deal2Download, err := models.GetFindOne()
 		if err != nil {
-			logs.GetLogger().Error(err)
+			log.Error(err)
 			break
 		}
 

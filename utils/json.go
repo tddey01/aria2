@@ -3,19 +3,18 @@ package utils
 import (
 	"encoding/json"
 
-	"github.com/tddey01/aria2/lib/logs"
 )
 
 func GetFieldFromJson(jsonBytes []byte, fieldName string) interface{} {
 	var result map[string]interface{}
 	err := json.Unmarshal(jsonBytes, &result)
 	if err != nil {
-		logs.GetLogger().Error(err)
+		log.Error(err)
 		return nil
 	}
 
 	if result == nil {
-		logs.GetLogger().Error("Failed to parse ", jsonBytes, " as map[string]interface{}.")
+		log.Error("Failed to parse ", jsonBytes, " as map[string]interface{}.")
 		return nil
 	}
 
@@ -40,7 +39,7 @@ func GetFieldStrFromJson(jsonBytes []byte, fieldName string) string {
 func GetFieldMapFromJson(jsonBytes []byte, fieldName string) map[string]interface{} {
 	fieldVal := GetFieldFromJson(jsonBytes, fieldName)
 	if fieldVal == nil {
-		logs.GetLogger().Info("No ", fieldName, " in ", jsonBytes)
+		log.Info("No ", fieldName, " in ", jsonBytes)
 		return nil
 	}
 
@@ -55,7 +54,7 @@ func GetFieldMapFromJson(jsonBytes []byte, fieldName string) map[string]interfac
 func ToJson(obj interface{}) string {
 	jsonBytes, err := json.Marshal(obj)
 	if err != nil {
-		logs.GetLogger().Error(err)
+		log.Error(err)
 		return ""
 	}
 

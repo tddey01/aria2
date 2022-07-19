@@ -3,16 +3,15 @@ package ipfs
 import (
 	"fmt"
 
-	"github.com/tddey01/aria2/lib/client/web"
-	"github.com/tddey01/aria2/lib/constants"
-	"github.com/tddey01/aria2/lib/logs"
-	"github.com/tddey01/aria2/lib/utils"
+	"github.com/tddey01/aria2/client/web"
+	"github.com/tddey01/aria2/constants"
+	"github.com/tddey01/aria2/utils"
 )
 
 func IpfsUploadFileByWebApi(apiUrl, filefullpath string) (*string, error) {
 	response, err := web.HttpUploadFileByStream(apiUrl, filefullpath)
 	if err != nil {
-		logs.GetLogger().Error(err)
+		log.Error(err)
 		return nil, err
 	}
 
@@ -33,15 +32,15 @@ func Export2CarFile(apiUrl, fileHash string, carFileFullPath string) error {
 	apiUrlFull = apiUrlFull + "?arg=" + fileHash + "&progress=false"
 	carFileContent, err := web.HttpPostNoToken(apiUrlFull, "")
 	if err != nil {
-		logs.GetLogger().Error(err)
+		log.Error(err)
 		return err
 	}
 
 	bytesWritten, err := utils.CreateFileWithByteContents(carFileFullPath, carFileContent)
 	if err != nil {
-		logs.GetLogger().Error(err)
+		log.Error(err)
 		return err
 	}
-	logs.GetLogger().Info(bytesWritten, " bytes have been written to:", carFileFullPath)
+	log.Info(bytesWritten, " bytes have been written to:", carFileFullPath)
 	return nil
 }

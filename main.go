@@ -3,12 +3,11 @@ package main
 import (
 	"fmt"
 	"github.com/tddey01/aria2/comm"
+	"github.com/tddey01/aria2/config"
 	"github.com/tddey01/aria2/routers"
 	"github.com/tddey01/aria2/service"
 	"os"
 	"strconv"
-
-	"github.com/tddey01/aria2/config"
 	"time"
 
 	"github.com/gin-gonic/gin"
