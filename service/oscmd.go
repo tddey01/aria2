@@ -3,7 +3,6 @@ package service
 import (
 	"bytes"
 	"errors"
-	"github.com/tddey01/aria2/client"
 	"io"
 	"os"
 	"os/exec"
@@ -45,7 +44,7 @@ func ExecOsCmdBase(cmdStr string, out2Screen bool, checkStdErr bool) (string, er
 		errMsg := strings.Join(errs, ",")
 
 		outErr := errors.New(errMsg)
-		client.log.Error(outErr)
+log.Error(outErr)
 		return "", outErr
 	}
 

@@ -4,7 +4,6 @@ import (
 	"bufio"
 	"errors"
 	"fmt"
-	"github.com/tddey01/aria2/service"
 	"io"
 	"io/ioutil"
 	"os"
@@ -61,18 +60,25 @@ func GetPathType(dirFullPath string) int {
 
 	if err != nil {
 		log.Info(err)
-		return service.PATH_TYPE_NOT_EXIST
+		return PATH_TYPE_NOT_EXIST
 	}
 
 	switch mode := fi.Mode(); {
 	case mode.IsDir():
-		return service.PATH_TYPE_DIR
+		return PATH_TYPE_DIR
 	case mode.IsRegular():
-		return service.PATH_TYPE_FILE
+		return PATH_TYPE_FILE
 	default:
-		return service.PATH_TYPE_UNKNOWN
+		return PATH_TYPE_UNKNOWN
 	}
 }
+
+const (
+	PATH_TYPE_NOT_EXIST = 0 //this path not exists
+	PATH_TYPE_FILE      = 1 //file
+	PATH_TYPE_DIR       = 2 //directory
+	PATH_TYPE_UNKNOWN   = 3 //unknown path type
+)
 
 func RemoveFile(filePath, fileName string) {
 	fileFullPath := filepath.Join(filePath, fileName)
@@ -243,7 +249,7 @@ func IsDirExists(dir string) bool {
 		return false
 	}
 
-	if GetPathType(dir) != service.PATH_TYPE_DIR {
+	if GetPathType(dir) != PATH_TYPE_DIR {
 		return false
 	}
 

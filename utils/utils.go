@@ -1,7 +1,6 @@
 package utils
 
 import (
-	"github.com/tddey01/aria2/service"
 	"math"
 	"math/rand"
 	"regexp"
@@ -309,17 +308,17 @@ func ConvertPrice2AttoFil(price string) string {
 	unit := strings.ToUpper(fields[1])
 	switch unit {
 	case "FIL":
-		priceAttoFil = priceAttoFil.Mul(decimal.NewFromFloat(service.LOTUS_PRICE_MULTIPLE_1E18))
+		priceAttoFil = priceAttoFil.Mul(decimal.NewFromFloat(LOTUS_PRICE_MULTIPLE_1E18))
 	case "MILLIFIL":
-		priceAttoFil = priceAttoFil.Mul(decimal.NewFromFloat(service.LOTUS_PRICE_MULTIPLE_1E15))
+		priceAttoFil = priceAttoFil.Mul(decimal.NewFromFloat(LOTUS_PRICE_MULTIPLE_1E15))
 	case "MICROFIL":
-		priceAttoFil = priceAttoFil.Mul(decimal.NewFromFloat(service.LOTUS_PRICE_MULTIPLE_1E12))
+		priceAttoFil = priceAttoFil.Mul(decimal.NewFromFloat(LOTUS_PRICE_MULTIPLE_1E12))
 	case "NANOFIL":
-		priceAttoFil = priceAttoFil.Mul(decimal.NewFromFloat(service.LOTUS_PRICE_MULTIPLE_1E9))
+		priceAttoFil = priceAttoFil.Mul(decimal.NewFromFloat(LOTUS_PRICE_MULTIPLE_1E9))
 	case "PICOFIL":
-		priceAttoFil = priceAttoFil.Mul(decimal.NewFromFloat(service.LOTUS_PRICE_MULTIPLE_1E6))
+		priceAttoFil = priceAttoFil.Mul(decimal.NewFromFloat(LOTUS_PRICE_MULTIPLE_1E6))
 	case "FEMTOFIL":
-		priceAttoFil = priceAttoFil.Mul(decimal.NewFromFloat(service.LOTUS_PRICE_MULTIPLE_1E3))
+		priceAttoFil = priceAttoFil.Mul(decimal.NewFromFloat(LOTUS_PRICE_MULTIPLE_1E3))
 	}
 
 	priceAttoFilStr := priceAttoFil.BigInt().String()
@@ -382,3 +381,12 @@ func GetDefaultTaskName() string {
 	taskName := "swan-task-" + randStr
 	return taskName
 }
+
+const (
+	LOTUS_PRICE_MULTIPLE_1E18 = 1e18
+	LOTUS_PRICE_MULTIPLE_1E15 = 1e15
+	LOTUS_PRICE_MULTIPLE_1E12 = 1e12
+	LOTUS_PRICE_MULTIPLE_1E9  = 1e9
+	LOTUS_PRICE_MULTIPLE_1E6  = 1e6
+	LOTUS_PRICE_MULTIPLE_1E3  = 1e3
+)
