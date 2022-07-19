@@ -25,7 +25,7 @@ func AdminOfflineDeal() {
 	aria2Client = SetAndCheckAria2Config()
 
 	//logs.GetLogger().Info("swan token:", swanClient.SwanToken)
-	//go aria2CheckDownloadStatus()
+	go aria2CheckDownloadStatus()
 	go aria2StartDownload()
 }
 
@@ -38,15 +38,15 @@ func aria2StartDownload() {
 	}
 }
 
-//func aria2CheckDownloadStatus() {
-//	for {
-//		log.Info("Start...")
-//
-//		aria2Service.CheckDownloadStatus(aria2Client)
-//		log.Info("Sleeping...")
-//		time.Sleep(time.Minute)
-//	}
-//}
+func aria2CheckDownloadStatus() {
+	for {
+		log.Info("Start...")
+
+		aria2Service.CheckDownloadStatus(aria2Client)
+		log.Info("Sleeping...")
+		time.Sleep(time.Minute)
+	}
+}
 
 func SetAndCheckAria2Config() *Aria2Client {
 	aria2DownloadDir := config.GetConfig().Aria2.Aria2DownloadDir
@@ -138,7 +138,7 @@ func (aria2Service *Aria2Service) CheckDownloadStatus4Deal(aria2Client *Aria2Cli
 		log.Info(deal,"下载完成",fileSizeDownloaded)
 		log.Info(deal.FileSize, "==" ,fileSizeDownloaded)
 		if fileSizeDownloaded >= 0 {
-			if err := model.UpdateSetDownload2(deal);err !=nil{
+			if err := model.UpdateSetDownload2(deal, gid); err != nil {
 				return
 			}
 			log.Info(deal, DEAL_STATUS_DOWNLOADED, &filePath, "download gid:"+gid)
@@ -157,10 +157,7 @@ func (aria2Service *Aria2Service) StartDownload4Deal(deal *model.FilSwan, aria2C
 		log.Info(deal, DEAL_STATUS_DOWNLOAD_FAILED, "parse source file url error,", err.Error())
 		return
 	}
-	if err = model.UpdateSetDownload1(deal); err != nil {
-		log.Error("改状态失败")
-		return
-	}
+
 	log.Info("下载文件大小 ", deal.FileSize, "   ", deal.DataCid)
 
 	outFilename := urlInfo.Path
@@ -175,6 +172,10 @@ func (aria2Service *Aria2Service) StartDownload4Deal(deal *model.FilSwan, aria2C
 	outDir := filepath.Join(aria2Service.DownloadDir, strconv.Itoa(0), timeStr)
 
 	aria2Download := aria2Client.DownloadFile(deal.DownloadUrl, outDir, outFilename)
+	if err = model.UpdateSetDownload1(deal, aria2Download.Gid); err != nil {
+		log.Error("改状态失败")
+		return
+	}
 
 	if aria2Download == nil {
 		log.Info(deal, DEAL_STATUS_DOWNLOAD_FAILED, "no response when asking aria2 to download")
@@ -201,9 +202,17 @@ func (aria2Service *Aria2Service) StartDownload(aria2Client *Aria2Client) {
 		return
 	}
 	log.Info("download task limit :", config.GetConfig().Aria2.Aria2Task)
-	log.Info("正在下载中的：===>> ",len(downloadingDeals))
+	log.Info("正在下载中的：===>> ", len(downloadingDeals))
 	countDownloadingDeals := len(downloadingDeals)
 	if countDownloadingDeals >= config.GetConfig().Aria2.Aria2Task {
+		return
+	}
+	Locked, err := model.GeTLocked()
+	if err != nil {
+		return
+	}
+	if len(Locked) >= config.GetConfig().Aria2.Aria2Task {
+		log.Info("当前任务大于：%d 停止接新任务", config.GetConfig().Aria2.Aria2Task)
 		return
 	}
 
@@ -222,20 +231,23 @@ func (aria2Service *Aria2Service) StartDownload(aria2Client *Aria2Client) {
 
 		aria2Service.StartDownload4Deal(deal2Download, aria2Client)
 
-		time.Sleep(1 * time.Second)
+		time.Sleep(1 * time.Minute)
 	}
 }
 
-//func (aria2Service *Aria2Service) CheckDownloadStatus(aria2Client *client.Aria2Client) {
-//	downloadingDeals := GetOfflineDeals(swanClient, DEAL_STATUS_DOWNLOADING, aria2Service.MinerFid, nil)
-//
-//	for _, deal := range downloadingDeals {
-//		gid := strings.Trim(deal, " ")
-//		if gid == "" {
-//			log.Error(deal, DEAL_STATUS_DOWNLOAD_FAILED, "download gid not found in offline_deals.note")
-//			continue
-//		}
-//
-//		aria2Service.CheckDownloadStatus4Deal(aria2Client, deal, gid)
-//	}
-//}
+func (aria2Service *Aria2Service) CheckDownloadStatus(aria2Client *Aria2Client) {
+	downloadingDeals, err := model.GeTGId()
+	if err != nil {
+		return
+	}
+
+	for _, deal := range downloadingDeals {
+		gid := deal.GId
+		if gid == "" {
+			log.Error(deal, DEAL_STATUS_DOWNLOAD_FAILED, "download gid not found in offline_deals.note")
+			continue
+		}
+
+		aria2Service.CheckDownloadStatus4Deal(aria2Client, deal, gid)
+	}
+}
