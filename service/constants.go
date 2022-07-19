@@ -1,7 +1,5 @@
 package service
 
-import "fmt"
-
 const (
 	EMPTY_STRING         = ""
 	DEFAULT_SELECT_LIMIT = "100"
@@ -76,17 +74,3 @@ const (
 	NOT_UPDATE_OFFLINE_DEAL_STATUS  = "no need to update deal status in swan"
 )
 
-const (
-	MajorVersion = 2
-	MinorVersion = 5
-	FixVersion   = 0
-	CommitHash   = ""
-)
-
-func GetVersion() string {
-	if CommitHash != "" {
-		return fmt.Sprintf("swan-miner-v%v.%v.%v-%s", MajorVersion, MinorVersion, FixVersion, CommitHash)
-	} else {
-		return fmt.Sprintf("swan-miner-v%v.%v.%v", MajorVersion, MinorVersion, FixVersion)
-	}
-}
