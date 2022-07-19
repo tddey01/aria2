@@ -14,6 +14,52 @@ import (
 	"github.com/tddey01/aria2/utils"
 )
 
+
+var aria2Client *Aria2Client
+
+var aria2Service *Aria2Service
+
+
+func AdminOfflineDeal() {
+	aria2Service = GetAria2Service()
+	aria2Client = SetAndCheckAria2Config()
+
+	//logs.GetLogger().Info("swan token:", swanClient.SwanToken)
+	go aria2StartDownload()
+}
+
+
+func aria2StartDownload() {
+	for {
+		log.Info("Start...")
+		aria2Service.StartDownload(aria2Client)
+		log.Info("Sleeping...")
+		time.Sleep(time.Minute)
+	}
+}
+
+
+func SetAndCheckAria2Config() *Aria2Client {
+	aria2DownloadDir := config.GetConfig().Aria2.Aria2DownloadDir
+	aria2Host := config.GetConfig().Aria2.Aria2Host
+	aria2Port := config.GetConfig().Aria2.Aria2Port
+	aria2Secret := config.GetConfig().Aria2.Aria2Secret
+
+	if !utils.IsDirExists(aria2DownloadDir) {
+		err := fmt.Errorf("aria2 down load dir:%s not exits, please set config:aria2->aria2_download_dir", aria2DownloadDir)
+		log.Fatal(err)
+	}
+
+	if len(aria2Host) == 0 {
+		log.Fatal("please set config:aria2->aria2_host")
+	}
+
+	aria2Client = GetAria2Client(aria2Host, aria2Secret, aria2Port)
+
+	return aria2Client
+}
+
+
 type Aria2Service struct {
 	MinerFid    string
 	DownloadDir string

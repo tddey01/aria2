@@ -5,7 +5,7 @@ import (
 	"fmt"
 	_ "github.com/go-sql-driver/mysql" //加载mysql
 	"github.com/jinzhu/gorm"
-	config2  "github.com/tddey01/aria2/config"
+	 "github.com/tddey01/aria2/config"
 	"strconv"
 )
 
@@ -52,19 +52,19 @@ func Mysqlconn(typesql string) (conns string, dbType string) {
 
 	switch typesql {
 	case "center":
-		dbType = config2.GetConfig().Mysql.DBType
-		host = config2.GetConfig().Mysql.Host
-		port = config2.GetConfig().Mysql.Port
-		database = config2.GetConfig().Mysql.DbName
-		username = config2.GetConfig().Mysql.DbUser
-		password = config2.GetConfig().Mysql.DbPasswd
+		dbType = config.GetConfig().Mysql.DBType
+		host = config.GetConfig().Mysql.Host
+		port = config.GetConfig().Mysql.Port
+		database = config.GetConfig().Mysql.DbName
+		username = config.GetConfig().Mysql.DbUser
+		password = config.GetConfig().Mysql.DbPasswd
 	case "admin":
-		dbType = config2.GetConfig().Mysql.DBType
-		host = config2.GetConfig().Mysql.Host
-		port = config2.GetConfig().Mysql.Port
-		database = config2.GetConfig().Mysql.DbName
-		username = config2.GetConfig().Mysql.DbUser
-		password = config2.GetConfig().Mysql.DbPasswd
+		dbType = config.GetConfig().Mysql.DBType
+		host = config.GetConfig().Mysql.Host
+		port = config.GetConfig().Mysql.Port
+		database = config.GetConfig().Mysql.DbName
+		username = config.GetConfig().Mysql.DbUser
+		password = config.GetConfig().Mysql.DbPasswd
 	}
 
 	if dbType != "mysql" {

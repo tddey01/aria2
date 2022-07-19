@@ -1,13 +1,5 @@
 package service
 
-import (
-	"fmt"
-	"github.com/tddey01/aria2/config"
-	"time"
-
-	"github.com/tddey01/aria2/utils"
-)
-
 const ARIA2_TASK_STATUS_ERROR = "error"
 const ARIA2_TASK_STATUS_WAITING = "waiting"
 const ARIA2_TASK_STATUS_ACTIVE = "active"
@@ -36,52 +28,5 @@ const ONCHAIN_DEAL_STATUS_AWAITING = "StorageDealAwaitingPreCommit"
 
 const LOTUS_IMPORT_NUMNBER = 20 //Max number of deals to be imported at a time
 const LOTUS_SCAN_NUMBER = 100   //Max number of deals to be scanned at a time
-
-var aria2Client *Aria2Client
-
-var aria2Service *Aria2Service
-
-
-func AdminOfflineDeal() {
-	aria2Service = GetAria2Service()
-	aria2Client = SetAndCheckAria2Config()
-
-	//logs.GetLogger().Info("swan token:", swanClient.SwanToken)
-	go aria2StartDownload()
-}
-
-func SetAndCheckAria2Config() *Aria2Client {
-	aria2DownloadDir := config.GetConfig().Aria2.Aria2DownloadDir
-	aria2Host := config.GetConfig().Aria2.Aria2Host
-	aria2Port := config.GetConfig().Aria2.Aria2Port
-	aria2Secret := config.GetConfig().Aria2.Aria2Secret
-
-	if !utils.IsDirExists(aria2DownloadDir) {
-		err := fmt.Errorf("aria2 down load dir:%s not exits, please set config:aria2->aria2_download_dir", aria2DownloadDir)
-		log.Fatal(err)
-	}
-
-	if len(aria2Host) == 0 {
-		log.Fatal("please set config:aria2->aria2_host")
-	}
-
-	aria2Client = GetAria2Client(aria2Host, aria2Secret, aria2Port)
-
-	return aria2Client
-}
-
-
-
-
-
-
-func aria2StartDownload() {
-	for {
-		log.Info("Start...")
-		aria2Service.StartDownload(aria2Client)
-		log.Info("Sleeping...")
-		time.Sleep(time.Minute)
-	}
-}
 
 
