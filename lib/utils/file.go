@@ -8,6 +8,9 @@ import (
 	"io/ioutil"
 	"os"
 	"path/filepath"
+
+	"github.com/tddey01/aria2/lib/constants"
+	"github.com/tddey01/aria2/lib/logs"
 )
 
 func IsFileExists(filePath, fileName string) bool {
@@ -15,7 +18,7 @@ func IsFileExists(filePath, fileName string) bool {
 	_, err := os.Stat(fileFullPath)
 
 	if err != nil {
-		log.Info(err)
+		logs.GetLogger().Info(err)
 		return false
 	}
 
@@ -26,7 +29,7 @@ func IsFileExistsFullPath(fileFullPath string) bool {
 	_, err := os.Stat(fileFullPath)
 
 	if err != nil {
-		log.Info(err)
+		logs.GetLogger().Info(err)
 		return false
 	}
 
@@ -37,7 +40,7 @@ func IsPathFile(dirFullPath string) (*bool, error) {
 	fi, err := os.Stat(dirFullPath)
 
 	if err != nil {
-		log.Info(err)
+		logs.GetLogger().Info(err)
 		return nil, err
 	}
 
@@ -50,7 +53,7 @@ func IsPathFile(dirFullPath string) (*bool, error) {
 		return &isFile, nil
 	default:
 		err := fmt.Errorf("unknown path type")
-		log.Error(err)
+		logs.GetLogger().Error(err)
 		return nil, err
 	}
 }
@@ -59,17 +62,17 @@ func GetPathType(dirFullPath string) int {
 	fi, err := os.Stat(dirFullPath)
 
 	if err != nil {
-		log.Info(err)
-		return PATH_TYPE_NOT_EXIST
+		logs.GetLogger().Info(err)
+		return constants.PATH_TYPE_NOT_EXIST
 	}
 
 	switch mode := fi.Mode(); {
 	case mode.IsDir():
-		return PATH_TYPE_DIR
+		return constants.PATH_TYPE_DIR
 	case mode.IsRegular():
-		return PATH_TYPE_FILE
+		return constants.PATH_TYPE_FILE
 	default:
-		return PATH_TYPE_UNKNOWN
+		return constants.PATH_TYPE_UNKNOWN
 	}
 }
 
@@ -77,14 +80,14 @@ func RemoveFile(filePath, fileName string) {
 	fileFullPath := filepath.Join(filePath, fileName)
 	err := os.Remove(fileFullPath)
 	if err != nil {
-		log.Error(err.Error())
+		logs.GetLogger().Error(err.Error())
 	}
 }
 
 func GetFileSize(fileFullPath string) int64 {
 	fi, err := os.Stat(fileFullPath)
 	if err != nil {
-		log.Info(err)
+		logs.GetLogger().Info(err)
 		return -1
 	}
 
@@ -95,7 +98,7 @@ func GetFileSize2(dir, fileName string) int64 {
 	fileFullPath := filepath.Join(dir, fileName)
 	fi, err := os.Stat(fileFullPath)
 	if err != nil {
-		log.Info(err)
+		logs.GetLogger().Info(err)
 		return -1
 	}
 
@@ -105,19 +108,19 @@ func GetFileSize2(dir, fileName string) int64 {
 func CopyFile(srcFilePath, destFilePath string) (int64, error) {
 	sourceFileStat, err := os.Stat(srcFilePath)
 	if err != nil {
-		log.Error(err)
+		logs.GetLogger().Error(err)
 		return 0, err
 	}
 
 	if !sourceFileStat.Mode().IsRegular() {
 		err = errors.New(srcFilePath + " is not a regular file")
-		log.Error(err)
+		logs.GetLogger().Error(err)
 		return 0, err
 	}
 
 	source, err := os.Open(srcFilePath)
 	if err != nil {
-		log.Error(err)
+		logs.GetLogger().Error(err)
 		return 0, err
 	}
 
@@ -125,7 +128,7 @@ func CopyFile(srcFilePath, destFilePath string) (int64, error) {
 
 	destination, err := os.Create(destFilePath)
 	if err != nil {
-		log.Error(err)
+		logs.GetLogger().Error(err)
 		return 0, err
 	}
 
@@ -133,7 +136,7 @@ func CopyFile(srcFilePath, destFilePath string) (int64, error) {
 
 	nBytes, err := io.Copy(destination, source)
 	if err != nil {
-		log.Error(err)
+		logs.GetLogger().Error(err)
 		return 0, err
 	}
 
@@ -144,7 +147,7 @@ func CreateFileWithContents(filefullpath string, lines []string) (int, error) {
 	f, err := os.Create(filefullpath)
 
 	if err != nil {
-		log.Error(err)
+		logs.GetLogger().Error(err)
 		return 0, nil
 	}
 
@@ -154,18 +157,18 @@ func CreateFileWithContents(filefullpath string, lines []string) (int, error) {
 	for _, line := range lines {
 		bytesWritten1, err := f.WriteString(line + "\n")
 		if err != nil {
-			log.Error(err)
+			logs.GetLogger().Error(err)
 			return 0, nil
 		}
 		bytesWritten = bytesWritten + bytesWritten1
 	}
 
 	if err != nil {
-		log.Error(err)
+		logs.GetLogger().Error(err)
 		return 0, nil
 	}
 
-	log.Info(filefullpath, " generated.")
+	logs.GetLogger().Info(filefullpath, " generated.")
 	return bytesWritten, nil
 }
 
@@ -173,7 +176,7 @@ func CreateFileWithByteContents(filefullpath string, contents []byte) (int, erro
 	f, err := os.Create(filefullpath)
 
 	if err != nil {
-		log.Error(err)
+		logs.GetLogger().Error(err)
 		return 0, nil
 	}
 
@@ -181,11 +184,11 @@ func CreateFileWithByteContents(filefullpath string, contents []byte) (int, erro
 
 	bytesWritten, err := f.Write(contents)
 	if err != nil {
-		log.Error(err)
+		logs.GetLogger().Error(err)
 		return 0, nil
 	}
 
-	log.Info(filefullpath, " generated.")
+	logs.GetLogger().Info(filefullpath, " generated.")
 	return bytesWritten, nil
 }
 
@@ -195,7 +198,7 @@ func ReadAllLines(dir, filename string) ([]string, error) {
 	file, err := os.Open(fileFullPath)
 
 	if err != nil {
-		log.Error("failed opening file: ", fileFullPath)
+		logs.GetLogger().Error("failed opening file: ", fileFullPath)
 		return nil, err
 	}
 
@@ -215,20 +218,20 @@ func ReadAllLines(dir, filename string) ([]string, error) {
 func ReadFile(filePath string) (string, []byte, error) {
 	sourceFileStat, err := os.Stat(filePath)
 	if err != nil {
-		log.Error(err)
+		logs.GetLogger().Error(err)
 		return "", nil, err
 	}
 
 	if !sourceFileStat.Mode().IsRegular() {
 		err = errors.New(filePath + " is not a regular file")
-		log.Error(err)
+		logs.GetLogger().Error(err)
 		return "", nil, err
 	}
 
 	data, err := ioutil.ReadFile(filePath)
 	if err != nil {
-		log.Error("failed reading data from file: ", filePath)
-		log.Error(err)
+		logs.GetLogger().Error("failed reading data from file: ", filePath)
+		logs.GetLogger().Error(err)
 		return "", nil, err
 	}
 
@@ -238,11 +241,11 @@ func ReadFile(filePath string) (string, []byte, error) {
 func IsDirExists(dir string) bool {
 	if IsStrEmpty(&dir) {
 		err := fmt.Errorf("dir is not provided")
-		log.Error(err)
+		logs.GetLogger().Error(err)
 		return false
 	}
 
-	if GetPathType(dir) != PATH_TYPE_DIR {
+	if GetPathType(dir) != constants.PATH_TYPE_DIR {
 		return false
 	}
 
@@ -252,14 +255,14 @@ func IsDirExists(dir string) bool {
 func CreateDir(dir string) error {
 	if len(dir) == 0 {
 		err := fmt.Errorf("dir is not provided")
-		log.Info(err)
+		logs.GetLogger().Info(err)
 		return err
 	}
 
 	err := os.MkdirAll(dir, os.ModePerm)
 	if err != nil {
 		err := fmt.Errorf("%s, failed to create output dir:%s", err.Error(), dir)
-		log.Error(err)
+		logs.GetLogger().Error(err)
 		return err
 	}
 
@@ -274,7 +277,7 @@ func GenerateFile(filepath, filename string, filesize int64) {
 		return
 	}
 
-	log.Info("start to generate file:", filefullpath, ", target size:", filesize, "GB")
+	logs.GetLogger().Info("start to generate file:", filefullpath, ", target size:", filesize, "GB")
 
 	filesizeInByte := filesize * 100000000
 	var i int64
@@ -293,13 +296,13 @@ func GenerateFile(filepath, filename string, filesize int64) {
 		return
 	}
 
-	log.Info("file:", filefullpath, " generated, size:", filesize, "GB")
+	logs.GetLogger().Info("file:", filefullpath, " generated, size:", filesize, "GB")
 }
 
 func CreateDirIfNotExists(dir, dirName string) error {
 	if IsStrEmpty(&dir) {
 		err := fmt.Errorf("%s directory is required", dirName)
-		log.Info(err)
+		logs.GetLogger().Info(err)
 		return err
 	}
 
@@ -310,26 +313,40 @@ func CreateDirIfNotExists(dir, dirName string) error {
 	err := os.MkdirAll(dir, os.ModePerm)
 	if err != nil {
 		err := fmt.Errorf("failed to create %s directory:%s,%s", dirName, dir, err.Error())
-		log.Error(err)
+		logs.GetLogger().Error(err)
 		return err
 	}
 
-	log.Info(dirName, " directory: ", dir, " created")
+	logs.GetLogger().Info(dirName, " directory: ", dir, " created")
 	return nil
 }
 
 func CheckDirExists(dir, dirName string) error {
 	if IsStrEmpty(&dir) {
 		err := fmt.Errorf("%s directory is required", dirName)
-		log.Error(err)
+		logs.GetLogger().Error(err)
 		return err
 	}
 
 	if !IsDirExists(dir) {
 		err := fmt.Errorf("%s directory:%s not exists", dirName, dir)
-		log.Error(err)
+		logs.GetLogger().Error(err)
 		return err
 	}
 
 	return nil
+}
+
+func GetFilesSize(dir string) (*int64, error) {
+	srcFiles, err := ioutil.ReadDir(dir)
+	if err != nil {
+		logs.GetLogger().Error(err)
+		return nil, err
+	}
+	srcFilesSize := int64(0)
+	for _, srcFile := range srcFiles {
+		srcFilesSize = srcFilesSize + srcFile.Size()
+	}
+
+	return &srcFilesSize, nil
 }

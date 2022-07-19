@@ -1,4 +1,4 @@
-package utils
+package service
 
 import "github.com/tddey01/aria2/logger"
 

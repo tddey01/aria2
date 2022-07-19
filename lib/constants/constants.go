@@ -1,4 +1,4 @@
-package utils
+package constants
 
 const (
 	EMPTY_STRING         = ""
@@ -70,4 +70,6 @@ const (
 
 	DURATION_MIN = 518400
 	DURATION_MAX = 1540000
+
+	HTTP_API_TIMEOUT_SECOND = 30
 )

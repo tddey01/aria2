@@ -4,7 +4,6 @@ import (
 	"github.com/BurntSushi/toml"
 	"os"
 	"path/filepath"
-	"time"
 )
 
 type aria2 struct {
@@ -15,18 +14,15 @@ type aria2 struct {
 	Aria2Task        int    `toml:"aria2_max_task"`
 }
 
-type lotus struct {
-	ClientApiUrl      string `toml:"client_api_url"`
-	MarketApiUrl      string `toml:"market_api_url"`
-	MarketAccessToken string `toml:"market_access_token"`
-}
-
 type mysql struct {
-	Host     string `toml:"host"`
-	Port     string `toml:"port"`
-	DbName   string `toml:"dbname"`
-	DbUser   string `toml:"users"`
-	DbPasswd string `toml:"passwd"`
+	DBType      string `toml:"DbType"`
+	Host        string `toml:"host"`
+	Port        int    `toml:"port"`
+	DbName      string `toml:"dbname"`
+	DbUser      string `toml:"users"`
+	DbPasswd    string `toml:"passwd"`
+	MaxIdleConn int    `toml:"MaxIdleConn"`
+	MaxOpenConn int    `toml:"MaxOpenConn"`
 }
 type logs struct {
 	MaxSize    int    `toml:"maxsize"`
@@ -35,20 +31,12 @@ type logs struct {
 	Level      string `toml:"level"`
 }
 type main struct {
-	SwanApiUrl               string        `toml:"api_url"`
-	SwanApiKey               string        `toml:"api_key"`
-	SwanAccessToken          string        `toml:"access_token"`
-	SwanApiHeartbeatInterval time.Duration `toml:"api_heartbeat_interval"`
-	MinerFid                 string        `toml:"miner_fid"`
-	LotusImportInterval      time.Duration `toml:"import_interval"`
-	LotusScanInterval        time.Duration `toml:"scan_interval"`
-	LogName                  string        `toml:"aria2"`
+	LogName string `toml:"LogName"`
 }
 
 type Configuration struct {
 	Port    int   `toml:"port"`
 	Release bool  `toml:"release"`
-	Lotus   lotus `toml:"lotus"`
 	Aria2   aria2 `toml:"aria2"`
 	Main    main  `toml:"main"`
 	Mysql   mysql `toml:"mysql"`
@@ -69,16 +57,12 @@ func requiredFieldsAreGiven(metaData toml.MetaData) bool {
 		{"port"},
 		{"release"},
 
-		{"lotus"},
 		{"aria2"},
 		{"main"},
 		{"mysql"},
 		{"bid"},
 		{"logs"},
 
-		{"lotus", "client_api_url"},
-		{"lotus", "market_api_url"},
-		{"lotus", "market_access_token"},
 
 		{"aria2", "aria2_download_dir"},
 		{"aria2", "aria2_host"},
@@ -86,29 +70,22 @@ func requiredFieldsAreGiven(metaData toml.MetaData) bool {
 		{"aria2", "aria2_secret"},
 		{"aria2", "aria2_max_task"},
 
-		{"main", "api_url"},
-		{"main", "miner_fid"},
-		{"main", "import_interval"},
-		{"main", "scan_interval"},
-		{"main", "api_key"},
-		{"main", "access_token"},
-		{"main", "api_heartbeat_interval"},
 
+		{"main", "LogName"},
+
+		{"mysql", "DbType"},
 		{"mysql", "host"},
 		{"mysql", "port"},
 		{"mysql", "dbname"},
 		{"mysql", "users"},
 		{"mysql", "passwd"},
+		{"mysql", "MaxIdleConn"},
+		{"mysql", "MaxOpenConn"},
 
 		{"logs", "maxsize"},
 		{"logs", "backups"},
 		{"logs", "day"},
 		{"logs", "level"},
-
-		{"bid", "bid_mode"},
-		{"bid", "expected_sealing_time"},
-		{"bid", "start_epoch"},
-		{"bid", "auto_bid_deal_per_day"},
 	}
 
 	for _, v := range requiredFields {
