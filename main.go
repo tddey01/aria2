@@ -3,7 +3,6 @@ package main
 import (
 	"fmt"
 	"github.com/gin-gonic/gin"
-	"github.com/tddey01/aria2/routers"
 	"github.com/tddey01/aria2/service"
 	"log"
 	"os"
@@ -61,8 +60,8 @@ func createHttpServer() {
 	//	ValidateHeaders: false,
 	//}))
 
-	v1 := r.Group("/api/v1")
-	routers.HostManager(v1.Group(URL_HOST_GET_COMMON))
+	//v1 := r.Group("/api/v1")
+	//routers.HostManager(v1.Group(URL_HOST_GET_COMMON))
 
 	err := r.Run(":" + strconv.Itoa(8888))
 	if err != nil {
