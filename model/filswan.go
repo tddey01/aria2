@@ -11,7 +11,7 @@ type FilSwan struct {
 	FileActive  string `gorm:"column:file_active" json:"file_active"`
 	//FileError   string `gorm:"column:file_error" json:"file_error"`
 	Locked string `gorm:"column:locked" json:"locked"`
-	GId    string `gorm:"column:dig" json:"dig"`
+	GId    string `gorm:"column:gid" json:"gid"`
 }
 
 func
