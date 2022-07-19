@@ -2,10 +2,10 @@ package main
 
 import (
 	"fmt"
-	"github.com/tddey01/aria2/comm"
 	"github.com/tddey01/aria2/config"
 	"github.com/tddey01/aria2/routers"
 	"github.com/tddey01/aria2/service"
+	"log"
 	"os"
 	"strconv"
 	"time"
@@ -14,6 +14,7 @@ import (
 	cors "github.com/itsjamie/gin-cors"
 )
 
+const  	URL_HOST_GET_COMMON    = "/common"
 func main() {
 	if len(os.Args) < 2 {
 		printUsage()
@@ -68,7 +69,7 @@ func createHttpServer() {
 	}))
 
 	v1 := r.Group("/api/v1")
-	routers.HostManager(v1.Group(comm.URL_HOST_GET_COMMON))
+	routers.HostManager(v1.Group(URL_HOST_GET_COMMON))
 
 	err := r.Run(":" + strconv.Itoa(config.GetConfig().Port))
 	if err != nil {
