@@ -60,7 +60,6 @@ func requiredFieldsAreGiven(metaData toml.MetaData) bool {
 		{"aria2"},
 		{"main"},
 		{"mysql"},
-		{"bid"},
 		{"logs"},
 
 
