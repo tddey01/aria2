@@ -1,6 +1,9 @@
 package model
 
-import orm "github.com/tddey01/aria2/drive/mysql"
+import (
+	"fmt"
+	orm "github.com/tddey01/aria2/drive/mysql"
+)
 
 type FilSwan struct {
 	FileName    string `gorm:"column:file_name" json:"file_name"`
@@ -15,8 +18,9 @@ type FilSwan struct {
 }
 
 func
-GetAll() (ret []*FilSwan, err error) {
-	sqlx := `select  * from  filswan where file_active=0  limit 0,9`
+GetAll( limit  int ) (ret []*FilSwan, err error) {
+	sqlx := `select  * from  filswan where file_active=0  limit 0,%d`
+	sqlx = fmt.Sprintf(sqlx,limit)
 	log.Debug(sqlx)
 	if err = orm.Eloquent.Raw(sqlx).Scan(&ret).Error; err != nil {
 		return
