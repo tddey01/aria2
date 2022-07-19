@@ -8,7 +8,6 @@ import (
 	"os/exec"
 	"strings"
 
-	"github.com/tddey01/aria2/lib/logs"
 )
 
 const SHELL_TO_USE = "bash"
@@ -45,7 +44,7 @@ func ExecOsCmdBase(cmdStr string, out2Screen bool, checkStdErr bool) (string, er
 		errMsg := strings.Join(errs, ",")
 
 		outErr := errors.New(errMsg)
-		logs.GetLogger().Error(outErr)
+		log.Error(outErr)
 		return "", outErr
 	}
 
