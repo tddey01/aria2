@@ -9,6 +9,7 @@ type FilSwan struct {
 	DataCid     string `gorm:"column:data_cid" json:"data_cid"`
 	DownloadUrl string `gorm:"column:download_url" json:"download_url"`
 	FileActive  string `gorm:"column:file_active" json:"file_active"`
+	FileError   string `gorm:"column:file_error" json:"file_error"`
 }
 
 func GetAll() (ret []*FilSwan, err error) {
@@ -18,8 +19,8 @@ func GetAll() (ret []*FilSwan, err error) {
 	}
 	return
 }
-func UpdateSetDownload1(msg *FilSwan) (err error) {
-	sqlx := `UPDATE  filswan set  file_active=1 where data_cid='` + msg.DataCid + `'`
+func UpdateSetDownload1(msg *FilSwan) (err error) { // 下载中
+	sqlx := `UPDATE  filswan set  file_active=1 ,file_error = 0  where data_cid='` + msg.DataCid + `'`
 	if err = orm.Eloquent.Exec(sqlx).Error; err != nil {
 		return
 	}
@@ -27,7 +28,7 @@ func UpdateSetDownload1(msg *FilSwan) (err error) {
 }
 
 func UpdateSetDownload2(msg *FilSwan) (err error) {
-	sqlx := `UPDATE  filswan set  file_active=2 where data_cid='` + msg.DataCid + `'`
+	sqlx := `UPDATE  filswan set  file_active=2 ,file_error = 0  where data_cid='` + msg.DataCid + `'`
 	if err = orm.Eloquent.Exec(sqlx).Error; err != nil {
 		return
 	}
@@ -35,20 +36,28 @@ func UpdateSetDownload2(msg *FilSwan) (err error) {
 }
 
 func UpdateSetDownload3(msg *FilSwan) (err error) {
-	sqlx := `UPDATE  filswan set  file_active=3 where data_cid='` + msg.DataCid + `'`
+	sqlx := `UPDATE  filswan set  file_active=3 ,file_error = 0 where data_cid='` + msg.DataCid + `'`
 	if err = orm.Eloquent.Exec(sqlx).Error; err != nil {
 		return
 	}
-
 	return
 }
 
 func GetFindOne() (*FilSwan, error) {
-	sk  :=FilSwan{}
+	sk := FilSwan{}
 
-	sqlx := `select * from filswan where file_active=0 limit 0,1`
+	sqlx := `select * from filswan where file_active=0  ANd limit 0,1`
 	if err := orm.Eloquent.Raw(sqlx).Scan(&sk).Error; err != nil {
-		return nil,nil
+		return nil, nil
 	}
-	return &sk ,nil
+	return &sk, nil
+}
+
+func GetFindTwo() (*FilSwan, error) {
+	sk := FilSwan{}
+	sqlx := `select * from filswan where file_active=2  ANd limit 0,1`
+	if err := orm.Eloquent.Raw(sqlx).Scan(&sk).Error; err != nil {
+		return nil, nil
+	}
+	return &sk, nil
 }

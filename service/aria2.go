@@ -193,9 +193,14 @@ func (aria2Service *Aria2Service) StartDownload(aria2Client *Aria2Client) {
 	}
 
 	for i := 1; i <= config.GetConfig().Aria2.Aria2Task-countDownloadingDeals; i++ {
-		deal2Download, err := model.GetFindOne()
+		deal2Download, err := model.GetFindOne() // 1
 		if err != nil {
 			log.Error(err)
+			break
+		}
+		
+		if deal2Download == nil {
+			log.Info("No offline deal to download")
 			break
 		}
 
