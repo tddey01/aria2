@@ -102,7 +102,8 @@ func InitConfig() {
 		log.Fatal("Cannot get home directory.")
 	}
 
-	configFile := filepath.Join(homedir, "./config.toml")
+	configFile := filepath.Join(homedir, "./.aria2/config.toml")
+
 
 	log.Info("Your config file is:", configFile)
 

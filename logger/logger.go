@@ -66,7 +66,7 @@ type TLogConfig struct {
 }
 
 func readLogConfig() *TLogConfig {
-	filepath := "./config/log.json"
+	filepath := "./log.json"
 	content, err := ioutil.ReadFile(filepath)
 	if err != nil {
 		fmt.Printf("read log config1 failed, err = %v\n", err)

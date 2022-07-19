@@ -135,6 +135,8 @@ func (aria2Service *Aria2Service) CheckDownloadStatus4Deal(aria2Client *Aria2Cli
 	case ARIA2_TASK_STATUS_COMPLETE:
 		fileSizeDownloaded := utils.GetFileSize(filePath)
 		log.Info(deal, "downloaded")
+		log.Info(deal,"下载完成",fileSizeDownloaded)
+		log.Info(deal.FileSize, "==" ,fileSizeDownloaded)
 		if fileSizeDownloaded >= 0 {
 			log.Info(deal, DEAL_STATUS_DOWNLOADED, &filePath, "download gid:"+gid)
 		} else {

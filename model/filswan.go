@@ -14,14 +14,14 @@ type FilSwan struct {
 
 func
 GetAll() (ret []*FilSwan, err error) {
-	sqlx := `select  * from  filswan where file_active=0 limit 0,9`
+	sqlx := `select  * from  filswan where file_active=0  limit 0,9`
 	if err = orm.Eloquent.Raw(sqlx).Scan(&ret).Error; err != nil {
 		return
 	}
 	return
 }
 func UpdateSetDownload1(msg *FilSwan) (err error) { // 下载中
-	sqlx := `UPDATE  filswan set  file_active=1  where data_cid='` + msg.DataCid + `'`
+	sqlx := `UPDATE  filswan set  file_active=1 ,locked=1  where data_cid='` + msg.DataCid + `'`
 	if err = orm.Eloquent.Exec(sqlx).Error; err != nil {
 		return
 	}
@@ -29,7 +29,7 @@ func UpdateSetDownload1(msg *FilSwan) (err error) { // 下载中
 }
 
 func UpdateSetDownload2(msg *FilSwan) (err error) {
-	sqlx := `UPDATE  filswan set  file_active=2  where data_cid='` + msg.DataCid + `'`
+	sqlx := `UPDATE  filswan set  file_active=2 ,locked=0  where data_cid='` + msg.DataCid + `'`
 	if err = orm.Eloquent.Exec(sqlx).Error; err != nil {
 		return
 	}
