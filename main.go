@@ -52,10 +52,7 @@ func printUsage() {
 
 func createHttpServer() {
 	//logs.GetLogger().Info("release mode:", config.GetConfig().Release)
-	if config.GetConfig().Release {
-		gin.SetMode(gin.ReleaseMode)
-	}
-
+	gin.SetMode(gin.ReleaseMode)
 	r := gin.Default()
 	r.Use(cors.Middleware(cors.Config{
 		Origins:         "*",
