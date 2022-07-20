@@ -9,6 +9,7 @@ import (
 	"path/filepath"
 	"strconv"
 	"strings"
+	"sync"
 	"time"
 
 	"github.com/tddey01/aria2/utils"
@@ -18,7 +19,7 @@ import (
 var aria2Client *Aria2Client
 
 var aria2Service *Aria2Service
-
+var locked  sync.RWMutex
 
 func AdminOfflineDeal() {
 	aria2Service = GetAria2Service()
@@ -41,10 +42,17 @@ func aria2StartDownload() {
 func aria2CheckDownloadStatus() {
 	for {
 		log.Info("Start...")
-
-		aria2Service.CheckDownloadStatus(aria2Client)
+		Locked, err := model.GeTLocked()
+		if err != nil {
+			return
+		}
+		if len(Locked) >= config.GetConfig().Aria2.Aria2Task {
+			log.Infof("当前任务大于：%d 停止接新任务", config.GetConfig().Aria2.Aria2Task )
+		}else {
+			aria2Service.CheckDownloadStatus(aria2Client)
+		}
 		log.Info("Sleeping...")
-		time.Sleep(time.Minute)
+		time.Sleep(1 * time.Minute)
 	}
 }
 
@@ -207,14 +215,7 @@ func (aria2Service *Aria2Service) StartDownload(aria2Client *Aria2Client) {
 	if countDownloadingDeals >= limit {
 		return
 	}
-	Locked, err := model.GeTLocked()
-	if err != nil {
-		return
-	}
-	if len(Locked) >= limit {
-		log.Infof("当前任务大于：%d 停止接新任务", limit)
-		return
-	}
+
 
 	for i := 1; i <= limit-countDownloadingDeals; i++ {
 		log.Info("开始下载")
