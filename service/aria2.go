@@ -15,11 +15,10 @@ import (
 	"github.com/tddey01/aria2/utils"
 )
 
-
 var aria2Client *Aria2Client
 
 var aria2Service *Aria2Service
-var locked  sync.RWMutex
+var locked sync.RWMutex
 
 func AdminOfflineDeal() {
 	aria2Service = GetAria2Service()
@@ -33,7 +32,15 @@ func AdminOfflineDeal() {
 func aria2StartDownload() {
 	for {
 		log.Info("Start...")
-		aria2Service.StartDownload(aria2Client)
+		Locked, err := model.GeTLocked()
+		if err != nil {
+			return
+		}
+		if len(Locked) >= config.GetConfig().Aria2.Aria2Task {
+			log.Infof("当前任务大于：%d 停止接新任务", config.GetConfig().Aria2.Aria2Task)
+		} else {
+			aria2Service.StartDownload(aria2Client)
+		}
 		log.Info("Sleeping...")
 		time.Sleep(time.Minute)
 	}
@@ -42,16 +49,7 @@ func aria2StartDownload() {
 func aria2CheckDownloadStatus() {
 	for {
 		log.Info("Start...")
-		Locked, err := model.GeTLocked()
-		if err != nil {
-			return
-		}
-		if len(Locked) > config.GetConfig().Aria2.Aria2Task {
-			log.Infof("当前任务大于：%d 停止接新任务", config.GetConfig().Aria2.Aria2Task )
-			break
-		}else {
-			aria2Service.CheckDownloadStatus(aria2Client)
-		}
+		aria2Service.CheckDownloadStatus(aria2Client)
 		log.Info("Sleeping...")
 		time.Sleep(1 * time.Minute)
 	}
@@ -76,7 +74,6 @@ func SetAndCheckAria2Config() *Aria2Client {
 
 	return aria2Client
 }
-
 
 type Aria2Service struct {
 	MinerFid    string
@@ -121,7 +118,7 @@ func (aria2Service *Aria2Service) CheckDownloadStatus4Deal(aria2Client *Aria2Cli
 	fileSize := utils.GetInt64FromStr(file.Length)
 
 	msg := fmt.Sprintf("current status:,%s,%s", result.Status, result.ErrorMessage)
-	log.Info(deal.DownloadUrl,"  ",deal.GId,"  ", msg)
+	log.Info(deal.DownloadUrl, "  ", deal.GId, "  ", msg)
 	switch result.Status {
 	case ARIA2_TASK_STATUS_ERROR:
 		log.Info(deal, DEAL_STATUS_DOWNLOAD_FAILED, &filePath, result.Status, "download gid:"+gid, result.ErrorCode, result.ErrorMessage)
@@ -135,16 +132,16 @@ func (aria2Service *Aria2Service) CheckDownloadStatus4Deal(aria2Client *Aria2Cli
 		downloadSpeed := utils.GetInt64FromStr(result.DownloadSpeed) / 1024
 		fileSizeDownloaded = fileSizeDownloaded / 1024
 		note := fmt.Sprintf("downloading, complete: %.2f%%, speed: %dKiB, downloaded:%dKiB, %s, download gid:%s", completePercent, downloadSpeed, fileSizeDownloaded, result.Status, gid)
-		log.Info(deal.DownloadUrl," ", note)
+		log.Info(deal.DownloadUrl, " ", note)
 		if result.Status == ARIA2_TASK_STATUS_WAITING {
 			msg = fmt.Sprintf("waiting to download,%s,%s", result.Status, result.ErrorMessage)
-			log.Info(deal.DownloadUrl,"  ",deal.GId,"  ", msg)
+			log.Info(deal.DownloadUrl, "  ", deal.GId, "  ", msg)
 		}
 	case ARIA2_TASK_STATUS_COMPLETE:
 		fileSizeDownloaded := utils.GetFileSize(filePath)
 		log.Info(deal, "  downloaded")
-		log.Info(deal,"  下载完成  ",fileSizeDownloaded)
-		log.Info(deal.FileSize, "==" ,fileSizeDownloaded)
+		log.Info(deal, "  下载完成  ", fileSizeDownloaded)
+		log.Info(deal.FileSize, "==", fileSizeDownloaded)
 		if fileSizeDownloaded >= 0 {
 			if err := model.UpdateSetDownload2(deal, gid); err != nil {
 				return
@@ -216,7 +213,6 @@ func (aria2Service *Aria2Service) StartDownload(aria2Client *Aria2Client) {
 	if countDownloadingDeals >= limit {
 		return
 	}
-
 
 	for i := 1; i <= limit-countDownloadingDeals; i++ {
 		log.Info("开始下载")
