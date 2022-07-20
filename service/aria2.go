@@ -112,7 +112,7 @@ func (aria2Service *Aria2Service) CheckDownloadStatus4Deal(aria2Client *Aria2Cli
 	fileSize := utils.GetInt64FromStr(file.Length)
 
 	msg := fmt.Sprintf("current status:,%s,%s", result.Status, result.ErrorMessage)
-	log.Info(deal.FileName,deal.DownloadUrl,deal.FileSize,deal.GId, msg)
+	log.Info(deal.DownloadUrl,"  ",deal.GId,"  ", msg)
 	switch result.Status {
 	case ARIA2_TASK_STATUS_ERROR:
 		log.Info(deal, DEAL_STATUS_DOWNLOAD_FAILED, &filePath, result.Status, "download gid:"+gid, result.ErrorCode, result.ErrorMessage)
@@ -128,8 +128,8 @@ func (aria2Service *Aria2Service) CheckDownloadStatus4Deal(aria2Client *Aria2Cli
 		note := fmt.Sprintf("downloading, complete: %.2f%%, speed: %dKiB, downloaded:%dKiB, %s, download gid:%s", completePercent, downloadSpeed, fileSizeDownloaded, result.Status, gid)
 		log.Info(deal.DownloadUrl,deal.GId,deal.FileName,deal.FileSize, note)
 		if result.Status == ARIA2_TASK_STATUS_WAITING {
-			msg := fmt.Sprintf("waiting to download,%s,%s", result.Status, result.ErrorMessage)
-			log.Info(deal.DownloadUrl,deal.FileName,deal.GId, msg)
+			msg = fmt.Sprintf("waiting to download,%s,%s", result.Status, result.ErrorMessage)
+			log.Info(deal.DownloadUrl,"  ",deal.GId,"  ", msg)
 		}
 	case ARIA2_TASK_STATUS_COMPLETE:
 		fileSizeDownloaded := utils.GetFileSize(filePath)
