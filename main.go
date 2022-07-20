@@ -22,6 +22,7 @@ func main() {
 		printVersion()
 	case "daemon":
 		service.AdminOfflineDeal()
+		service.BlockStartNewTotal3()
 		createHttpServer()
 	default:
 		printUsage()
