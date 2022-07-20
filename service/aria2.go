@@ -46,8 +46,9 @@ func aria2CheckDownloadStatus() {
 		if err != nil {
 			return
 		}
-		if len(Locked) >= config.GetConfig().Aria2.Aria2Task {
+		if len(Locked) > config.GetConfig().Aria2.Aria2Task {
 			log.Infof("当前任务大于：%d 停止接新任务", config.GetConfig().Aria2.Aria2Task )
+			break
 		}else {
 			aria2Service.CheckDownloadStatus(aria2Client)
 		}
