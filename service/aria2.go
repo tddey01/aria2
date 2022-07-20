@@ -212,7 +212,7 @@ func (aria2Service *Aria2Service) StartDownload(aria2Client *Aria2Client) {
 	}
 
 	if len(Locked) >= config.GetConfig().Aria2.Aria2Task {
-		log.Infof("当前任务大于：%d 停止接新任务", config.GetConfig().Aria2.Aria2Task)
+		//log.Infof("当前任务大于：%d 停止接新任务", config.GetConfig().Aria2.Aria2Task)
 		return
 	} else {
 		for i := 1; i <= limit-countDownloadingDeals; i++ {
