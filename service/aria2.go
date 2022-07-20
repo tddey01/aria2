@@ -31,19 +31,19 @@ func AdminOfflineDeal() {
 
 func aria2StartDownload() {
 	for {
-		log.Info("Start...")
+		log.Info(">>>>>>>>>>>> Start...")
 		aria2Service.StartDownload(aria2Client)
-		log.Info("Sleeping...")
+		log.Info(">>>>>>>>>>>>  Sleeping...")
 		time.Sleep(time.Minute)
 	}
 }
 
 func aria2CheckDownloadStatus() {
 	for {
-		log.Info("Start...")
+		log.Info(">>>>>>>>>>>>  Start...")
 		aria2Service.CheckDownloadStatus(aria2Client)
-		log.Info("Sleeping...")
-		time.Sleep(1 * time.Minute)
+		log.Info(">>>>>>>>>>>>  Sleeping...")
+		time.Sleep(time.Minute)
 	}
 }
 
