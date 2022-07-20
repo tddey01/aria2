@@ -112,7 +112,7 @@ func (aria2Service *Aria2Service) CheckDownloadStatus4Deal(aria2Client *Aria2Cli
 	fileSize := utils.GetInt64FromStr(file.Length)
 
 	msg := fmt.Sprintf("current status:,%s,%s", result.Status, result.ErrorMessage)
-	log.Info(deal, msg)
+	log.Info(deal.FileName,deal.DownloadUrl,deal.FileSize,deal.GId, msg)
 	switch result.Status {
 	case ARIA2_TASK_STATUS_ERROR:
 		log.Info(deal, DEAL_STATUS_DOWNLOAD_FAILED, &filePath, result.Status, "download gid:"+gid, result.ErrorCode, result.ErrorMessage)
