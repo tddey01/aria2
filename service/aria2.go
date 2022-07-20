@@ -193,6 +193,11 @@ func (aria2Service *Aria2Service) StartDownload4Deal(deal *model.FilSwan, aria2C
 }
 
 func (aria2Service *Aria2Service) StartDownload(aria2Client *Aria2Client) {
+	Locked, err := model.GeTLocked()
+	if err != nil {
+		return
+	}
+
 	limit := config.GetConfig().Aria2.Aria2Task
 	downloadingDeals, err := model.GetAll()
 	if err != nil {
@@ -200,15 +205,12 @@ func (aria2Service *Aria2Service) StartDownload(aria2Client *Aria2Client) {
 		return
 	}
 	log.Info("download task limit :", limit)
-	log.Info("正在下载中的：===>> ", len(downloadingDeals))
+	log.Info("正在下载中的：===>> ", len(Locked))
 	countDownloadingDeals := len(downloadingDeals)
 	if countDownloadingDeals >= limit {
 		return
 	}
-	Locked, err := model.GeTLocked()
-	if err != nil {
-		return
-	}
+
 	if len(Locked) >= config.GetConfig().Aria2.Aria2Task {
 		log.Infof("当前任务大于：%d 停止接新任务", config.GetConfig().Aria2.Aria2Task)
 		return
@@ -236,14 +238,12 @@ func (aria2Service *Aria2Service) CheckDownloadStatus(aria2Client *Aria2Client) 
 	if err != nil {
 		return
 	}
-
 	for _, deal := range downloadingDeals {
 		gid := deal.GId
 		if gid == "" {
 			log.Error(deal, DEAL_STATUS_DOWNLOAD_FAILED, "download gid not found in offline_deals.note")
 			continue
 		}
-
 		aria2Service.CheckDownloadStatus4Deal(aria2Client, deal, gid)
 	}
 }
