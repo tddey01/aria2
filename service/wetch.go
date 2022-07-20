@@ -15,7 +15,7 @@ func BlockStartNewTotal3() {
 		log.Error("当天出块 统计失败  func error:", err.Error())
 		return
 	}
-	log.Info("开启任务计划")
+	log.Debug("开启任务计划")
 	c.Start()
 }
 
@@ -36,7 +36,7 @@ func BlockTotalCount() (err error) {
 	}
 
 	str += fmt.Sprintf("\n下载中 >>>>：%s \n下载完成 >>: %s ", datacount[0].Downloading, datacount[0].Downloaded) //节点：f080468  有效算力: 6.432 PiB  今日块: 3  24h幸运值：80.00% 3日内块：2
-	log.Info(" 发消息 企业微信你")
+	log.Debug(" 发消息 企业微信你")
 	restp := &Msg{
 		Touser:  "@all",
 		Msgtype: "text",
