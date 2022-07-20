@@ -105,7 +105,7 @@ func InitConfig() {
 	configFile := filepath.Join(homedir, "./.aria2/config.toml")
 
 
-	log.Info("Your config file is:", configFile)
+	log.Debug("Your config file is:", configFile)
 
 	if metaData, err := toml.DecodeFile(configFile, &config); err != nil {
 		log.Fatal("error:", err)

@@ -22,7 +22,7 @@ func initAdmin() {
 
 	var err error
 	conn, dbType := Mysqlconn("admin")
-	log.Println("管理系统数据库链接：" + conn)
+	log.Debug("管理系统数据库链接：" + conn)
 	var db Database
 	if dbType == "mysql" {
 		db = new(Mysql)
@@ -35,7 +35,7 @@ func initAdmin() {
 	if err != nil {
 		log.Fatalln("mysql admin connect error %v", err)
 	} else {
-		log.Println("mysql admin connect success!")
+		log.Debug("mysql admin connect success!")
 	}
 	if Eloquent.Error != nil {
 		log.Fatalln("database error %v", Eloquent.Error)
