@@ -129,7 +129,7 @@ func (aria2Service *Aria2Service) CheckDownloadStatus4Deal(aria2Client *Aria2Cli
 		log.Info(deal.DownloadUrl,deal.GId,deal.FileName,deal.FileSize, note)
 		if result.Status == ARIA2_TASK_STATUS_WAITING {
 			msg := fmt.Sprintf("waiting to download,%s,%s", result.Status, result.ErrorMessage)
-			log.Info(deal, msg)
+			log.Info(deal.DownloadUrl,deal.FileName,deal.GId, msg)
 		}
 	case ARIA2_TASK_STATUS_COMPLETE:
 		fileSizeDownloaded := utils.GetFileSize(filePath)
