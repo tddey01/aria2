@@ -205,7 +205,7 @@ func (aria2Service *Aria2Service) StartDownload(aria2Client *Aria2Client) {
 		return
 	}
 	log.Debug("download task limit :", limit)
-	log.Info("downloading ：--->: ", len(Locked))
+	log.Info("downloading >>>>>>>>> ", len(Locked))
 	countDownloadingDeals := len(downloadingDeals)
 	if countDownloadingDeals >= limit {
 		return
