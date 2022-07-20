@@ -204,8 +204,8 @@ func (aria2Service *Aria2Service) StartDownload(aria2Client *Aria2Client) {
 		log.Error("获取错误")
 		return
 	}
-	log.Info("download task limit :", limit)
-	log.Info("正在下载中的：===>> ", len(Locked))
+	log.Debug("download task limit :", limit)
+	log.Info("downloading ：--->: ", len(Locked))
 	countDownloadingDeals := len(downloadingDeals)
 	if countDownloadingDeals >= limit {
 		return
