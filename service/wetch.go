@@ -9,9 +9,8 @@ import (
 )
 
 func BlockStartNewTotal3() {
-	spec := "01, 01, *, *, *, *" // 每天23 点 01 分
+	spec := "01, 59, *, *, *, *" // 每天23 点 01 分
 	c := cron.New()
-
 	if err := c.AddFunc(spec, BlockStartNew); err != nil {
 		log.Error("当天出块 统计失败  func error:", err.Error())
 		return
@@ -20,7 +19,6 @@ func BlockStartNewTotal3() {
 }
 
 func BlockStartNew() {
-
 	if err := BlockTotalCount(); err != nil { // 出块统计当天
 		log.Error("携程死掉了")
 	}
@@ -31,12 +29,12 @@ func BlockStartNew() {
 func BlockTotalCount() (err error) {
 
 	str := fmt.Sprintf(" %s", utils.TimeHMS())
-	datacount,err := model.GetCount()
-	if err !=nil{
+	datacount, err := model.GetCount()
+	if err != nil {
 		return
 	}
 
-	str += fmt.Sprintf("\n下载中 >>>>：%s \n下载完成>>: %s ",datacount.Downloading,datacount.Downloaded ) //节点：f080468  有效算力: 6.432 PiB  今日块: 3  24h幸运值：80.00% 3日内块：2
+	str += fmt.Sprintf("\n下载中 >>>>：%s \n下载完成>>: %s ", datacount.Downloading, datacount.Downloaded) //节点：f080468  有效算力: 6.432 PiB  今日块: 3  24h幸运值：80.00% 3日内块：2
 
 	restp := &Msg{
 		Touser:  "@all",
