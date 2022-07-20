@@ -126,7 +126,7 @@ func (aria2Service *Aria2Service) CheckDownloadStatus4Deal(aria2Client *Aria2Cli
 		downloadSpeed := utils.GetInt64FromStr(result.DownloadSpeed) / 1024
 		fileSizeDownloaded = fileSizeDownloaded / 1024
 		note := fmt.Sprintf("downloading, complete: %.2f%%, speed: %dKiB, downloaded:%dKiB, %s, download gid:%s", completePercent, downloadSpeed, fileSizeDownloaded, result.Status, gid)
-		log.Info(deal, note)
+		log.Info(deal.DownloadUrl,deal.GId,deal.FileName,deal.FileSize, note)
 		if result.Status == ARIA2_TASK_STATUS_WAITING {
 			msg := fmt.Sprintf("waiting to download,%s,%s", result.Status, result.ErrorMessage)
 			log.Info(deal, msg)
@@ -212,7 +212,7 @@ func (aria2Service *Aria2Service) StartDownload(aria2Client *Aria2Client) {
 		return
 	}
 	if len(Locked) >= limit {
-		log.Info("当前任务大于：%d 停止接新任务", limit)
+		log.Infof("当前任务大于：%d 停止接新任务", limit)
 		return
 	}
 
@@ -223,12 +223,10 @@ func (aria2Service *Aria2Service) StartDownload(aria2Client *Aria2Client) {
 			log.Error(err)
 			break
 		}
-
 		if deal2Download == nil {
 			log.Info("No offline deal to download")
 			break
 		}
-
 		aria2Service.StartDownload4Deal(deal2Download, aria2Client)
 
 		time.Sleep(1 * time.Minute)

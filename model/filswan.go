@@ -18,7 +18,7 @@ type FilSwan struct {
 
 func
 GetAll( ) (ret []*FilSwan, err error) {
-	sqlx := `select  * from  filswan where file_active=0  limit 0,9`
+	sqlx := `select  * from  filswan where file_active=0  limit 0,5`
 	log.Debug(sqlx)
 	if err = orm.Eloquent.Raw(sqlx).Scan(&ret).Error; err != nil {
 		return
