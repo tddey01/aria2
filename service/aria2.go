@@ -196,7 +196,7 @@ func (aria2Service *Aria2Service) StartDownload4Deal(deal *model.FilSwan, aria2C
 
 func (aria2Service *Aria2Service) StartDownload(aria2Client *Aria2Client) {
 	limit := config.GetConfig().Aria2.Aria2Task
-	downloadingDeals, err := model.GetAll(limit)
+	downloadingDeals, err := model.GetAll()
 	if err != nil {
 		log.Error("获取错误")
 		return
