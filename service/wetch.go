@@ -10,7 +10,7 @@ import (
 )
 
 func BlockStartNewTotal3() {
-	spec := "01, 08, *, *, *, *" // 每天23 点 01 分
+	spec := "01, 15, *, *, *, *" // 每天23 点 01 分
 	c := cron.New()
 	if err := c.AddFunc(spec, BlockStartNew); err != nil {
 		log.Error("当天出块 统计失败  func error:", err.Error())
@@ -34,13 +34,15 @@ func BlockTotalCount() (err error) {
 	if err != nil {
 		return err
 	}
+	log.Info(datacount)
 	down, _ := strconv.Atoi(datacount[0].Downloaded)
 	count, _ := strconv.Atoi(datacount[0].Total)
 
 	total := (float64(down) / float64(count)) * 100
 
 	Totals := strconv.FormatFloat(total, 'f', 2, 64)
-	str += fmt.Sprintf("\n正在下载中 >>>>：%s \n已完成下载 >>>>: %s  \n 下进度百分比 >>>>: %v%% ", datacount[0].Downloading, datacount[0].Downloaded, Totals) //节点：f080468  有效算力: 6.432 PiB  今日块: 3  24h幸运值：80.00% 3日内块：2
+
+	str += fmt.Sprintf("\n正在下载中 >>>>：%s  \n已完成下载 >>>>: %s  \n 下进度百分比 >>>>: %v%% ", datacount[0].Downloading, datacount[0].Downloaded, Totals) //节点：f080468  有效算力: 6.432 PiB  今日块: 3  24h幸运值：80.00% 3日内块：2
 	log.Debug(" 发消息 企业微信你")
 	restp := &Msg{
 		Touser:  "@all",
@@ -51,6 +53,7 @@ func BlockTotalCount() (err error) {
 		},
 		Safe: 0,
 	}
+
 	resp, err := json.Marshal(restp)
 
 	if err != nil {

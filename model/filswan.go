@@ -97,7 +97,7 @@ type Dw struct {
 }
 
 func GetCount() (ret []*Dw, err error) {
-	sqlx := `select sum(skt) as download  ,sum(stk) as compute ,sum(toal) total   from  (
+	sqlx := `select sum(skt) as download  ,sum(stk) as compute , sum(toal) total   from  (
     select  count(data_cid) as  skt ,0 as stk , 0 as toal  from  filswan where  locked=1
     union  all
     select  0 as skt , count(data_cid) as stk  ,0 as toal from filswan where file_active=2
