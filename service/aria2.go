@@ -210,11 +210,19 @@ func (aria2Service *Aria2Service) StartDownload(aria2Client *Aria2Client) {
 		return
 	}
 
-	if len(Locked) >= config.GetConfig().Aria2.Aria2Task {
+	if len(Locked) > config.GetConfig().Aria2.Aria2Task {
 		//log.Infof("当前任务大于：%d 停止接新任务", config.GetConfig().Aria2.Aria2Task)
 		return
 	} else {
 		for i := 1; i <= config.GetConfig().Aria2.Aria2Task-countDownloadingDeals; i++ {
+			Locked1, err1 := model.GeTLocked()
+			if err1 != nil {
+				return
+			}
+
+			if len(Locked1) > config.GetConfig().Aria2.Aria2Task {
+				return
+			}
 			log.Info("开始下载")
 			deal2Download, err := model.GetFindOne() // 1  3
 			if err != nil {
@@ -226,7 +234,6 @@ func (aria2Service *Aria2Service) StartDownload(aria2Client *Aria2Client) {
 				break
 			}
 			aria2Service.StartDownload4Deal(deal2Download, aria2Client)
-
 			time.Sleep(1 * time.Minute)
 		}
 	}
