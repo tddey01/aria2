@@ -210,7 +210,7 @@ func (aria2Service *Aria2Service) StartDownload(aria2Client *Aria2Client) {
 		return
 	}
 
-	if len(Locked) > config.GetConfig().Aria2.Aria2Task {
+	if len(Locked) >= config.GetConfig().Aria2.Aria2Task {
 		//log.Infof("当前任务大于：%d 停止接新任务", config.GetConfig().Aria2.Aria2Task)
 		return
 	} else {
@@ -220,7 +220,7 @@ func (aria2Service *Aria2Service) StartDownload(aria2Client *Aria2Client) {
 				return
 			}
 
-			if len(Locked1) > config.GetConfig().Aria2.Aria2Task {
+			if len(Locked1) >= config.GetConfig().Aria2.Aria2Task {
 				return
 			}
 			log.Info("开始下载")
