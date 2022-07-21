@@ -14,7 +14,7 @@ type FilSwan struct {
 	//FileError   string `gorm:"column:file_error" json:"file_error"`
 	Locked      string `gorm:"column:locked" json:"locked"`
 	GId         string `gorm:"column:gid" json:"gid"`
-	Import      string `gorm:"column:import" json:"import"`
+	Import      string `gorm:"column:import_successful" json:"import_successful"`
 	CreateTimes string `gorm:"column:create_times" json:"create_times"`
 	UpdateTimes string `gorm:"column:update_times" json:"update_times"`
 }
