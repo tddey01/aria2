@@ -91,9 +91,9 @@ func GeTLocked() (ret []*FilSwan, err error) {
 }
 
 type Dw struct {
-	Downloading int `gorm:"column:downloading" json:"downloading"`
-	Downloaded  int `gorm:"column:downloaded" json:"downloaded"`
-	Total       int `gorm:"column:total" json:"total"`
+	Downloading string `gorm:"column:downloading" json:"downloading"`
+	Downloaded  string `gorm:"column:downloaded" json:"downloaded"`
+	Total       string `gorm:"column:total" json:"total"`
 }
 
 func GetCount() (ret []*Dw, err error) {
