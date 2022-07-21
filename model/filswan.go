@@ -12,8 +12,11 @@ type FilSwan struct {
 	DownloadUrl string `gorm:"column:download_url" json:"download_url"`
 	FileActive  string `gorm:"column:file_active" json:"file_active"`
 	//FileError   string `gorm:"column:file_error" json:"file_error"`
-	Locked string `gorm:"column:locked" json:"locked"`
-	GId    string `gorm:"column:gid" json:"gid"`
+	Locked      string `gorm:"column:locked" json:"locked"`
+	GId         string `gorm:"column:gid" json:"gid"`
+	Import      string `gorm:"column:import" json:"import"`
+	CreateTimes string `gorm:"column:create_times" json:"create_times"`
+	UpdateTimes string `gorm:"column:update_times" json:"update_times"`
 }
 
 func GetAll() (ret []*FilSwan, err error) {
@@ -25,7 +28,7 @@ func GetAll() (ret []*FilSwan, err error) {
 	return
 }
 func UpdateSetDownload1(msg *FilSwan, gid string) (err error) { // 下载中
-	sqlx := `UPDATE  filswan set  file_active=1 ,locked=1 ,gid='` + gid + `' where data_cid='` + msg.DataCid + `'`
+	sqlx := `UPDATE  filswan set  file_active=1 ,locked=1 ,gid='` + gid + `',create_times=now()  where data_cid='` + msg.DataCid + `'`
 	log.Debug(sqlx)
 	if err = orm.Eloquent.Exec(sqlx).Error; err != nil {
 		return
@@ -34,7 +37,7 @@ func UpdateSetDownload1(msg *FilSwan, gid string) (err error) { // 下载中
 }
 
 func UpdateSetDownload2(msg *FilSwan, gid string) (err error) {
-	sqlx := `UPDATE  filswan set  file_active=2 ,locked=0  where data_cid='` + msg.DataCid + `' AND gid = '` + gid + `'`
+	sqlx := `UPDATE  filswan set  file_active=2 ,locked=0 ,update_times=now()   where data_cid='` + msg.DataCid + `' AND gid = '` + gid + `'`
 	log.Debug(sqlx)
 	if err = orm.Eloquent.Debug().Exec(sqlx).Error; err != nil {
 		return

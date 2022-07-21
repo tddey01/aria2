@@ -10,7 +10,7 @@ import (
 )
 
 func BlockStartNewTotal3() {
-	spec := "01, 18, *, *, *, *" // 每天23 点 01 分
+	spec := "01, 01, *, *, *, *" // 每天23 点 01 分
 	c := cron.New()
 	if err := c.AddFunc(spec, BlockStartNew); err != nil {
 		log.Error("当天出块 统计失败  func error:", err.Error())
