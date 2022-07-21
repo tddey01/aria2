@@ -6,6 +6,7 @@ import (
 	"github.com/robfig/cron"
 	"github.com/tddey01/aria2/model"
 	"github.com/tddey01/aria2/utils"
+	"strconv"
 )
 
 func BlockStartNewTotal3() {
@@ -34,13 +35,14 @@ func BlockTotalCount() (err error) {
 	if err != nil {
 		return err
 	}
-
-	str += fmt.Sprintf("\n下载中 >>>>：%s \n下载完成 >>: %s ", datacount[0].Downloading, datacount[0].Downloaded) //节点：f080468  有效算力: 6.432 PiB  今日块: 3  24h幸运值：80.00% 3日内块：2
+	total := float64(datacount[0].Downloaded) / float64(datacount[0].Total) * 100
+	Totals := strconv.FormatFloat(total, 'f', 2, 64)
+	str += fmt.Sprintf("\n正在下载中 >>>>：%s \n已完成下载 >>>>: %s  \n 下进度百分比 >>>>: %d%% ", strconv.Itoa(datacount[0].Downloading), strconv.Itoa(datacount[0].Downloaded), Totals) //节点：f080468  有效算力: 6.432 PiB  今日块: 3  24h幸运值：80.00% 3日内块：2
 	log.Debug(" 发消息 企业微信你")
 	restp := &Msg{
 		Touser:  "@all",
 		Msgtype: "text",
-		Agentid: 1000002,
+		Agentid: 1000004,
 		Text: &Message{
 			Content: str,
 		},

@@ -91,13 +91,19 @@ func GeTLocked() (ret []*FilSwan, err error) {
 }
 
 type Dw struct {
-	Downloading string `gorm:"column:downloading" json:"downloading"`
-	Downloaded  string `gorm:"column:downloaded" json:"downloaded"`
+	Downloading int `gorm:"column:downloading" json:"downloading"`
+	Downloaded  int `gorm:"column:downloaded" json:"downloaded"`
+	Total       int `gorm:"column:total" json:"total"`
 }
 
 func GetCount() (ret []*Dw, err error) {
-	sqlx := `select sum(skt) as downloading  ,sum(stk) as downloaded  from  ( select  count(data_cid) as  skt ,0 as stk  from  filswan where  locked=1
-    union  all select  0 as skt , count(data_cid) as stk  from filswan where file_active=2 )a`
+	sqlx := `select sum(skt) as download  ,sum(stk) as compute ,sum(toal) total   from  (
+    select  count(data_cid) as  skt ,0 as stk , 0 as toal  from  filswan where  locked=1
+    union  all
+    select  0 as skt , count(data_cid) as stk  ,0 as toal from filswan where file_active=2
+    union  all
+    select    0 as skt , 0 as stk , count(data_cid) as toal from filswan
+    )a`
 	log.Debug(sqlx)
 	if err = orm.Eloquent.Raw(sqlx).Scan(&ret).Error; err != nil {
 		return
