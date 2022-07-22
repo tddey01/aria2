@@ -23,6 +23,7 @@ type mysql struct {
 	DbPasswd    string `toml:"passwd"`
 	MaxIdleConn int    `toml:"MaxIdleConn"`
 	MaxOpenConn int    `toml:"MaxOpenConn"`
+	Table       string `toml:"table"`
 }
 type logs struct {
 	MaxSize    int    `toml:"maxsize"`
@@ -62,13 +63,11 @@ func requiredFieldsAreGiven(metaData toml.MetaData) bool {
 		{"mysql"},
 		{"logs"},
 
-
 		{"aria2", "aria2_download_dir"},
 		{"aria2", "aria2_host"},
 		{"aria2", "aria2_port"},
 		{"aria2", "aria2_secret"},
 		{"aria2", "aria2_max_task"},
-
 
 		{"main", "LogName"},
 
@@ -80,6 +79,7 @@ func requiredFieldsAreGiven(metaData toml.MetaData) bool {
 		{"mysql", "passwd"},
 		{"mysql", "MaxIdleConn"},
 		{"mysql", "MaxOpenConn"},
+		{"mysql", "table"},
 
 		{"logs", "maxsize"},
 		{"logs", "backups"},
@@ -103,7 +103,6 @@ func InitConfig() {
 	}
 
 	configFile := filepath.Join(homedir, "./.aria2/config.toml")
-
 
 	log.Debug("Your config file is:", configFile)
 

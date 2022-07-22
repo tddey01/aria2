@@ -1,6 +1,7 @@
 package model
 
 import (
+	"github.com/tddey01/aria2/config"
 	orm "github.com/tddey01/aria2/drive/mysql"
 )
 
@@ -21,7 +22,8 @@ type FilSwan struct {
 }
 
 func GetAll() (ret []*FilSwan, err error) {
-	sqlx := `select  * from  filswan where file_active=0  limit 0,5`
+	table := config.GetConfig().Mysql.Table
+	sqlx := `select  * from  '` + table + `' where file_active=0  limit 0,5`
 	log.Debug(sqlx)
 	if err = orm.Eloquent.Raw(sqlx).Scan(&ret).Error; err != nil {
 		return
@@ -29,7 +31,8 @@ func GetAll() (ret []*FilSwan, err error) {
 	return
 }
 func UpdateSetDownload1(msg *FilSwan, gid string) (err error) { // 下载中
-	sqlx := `UPDATE  filswan set  file_active=1 ,locked=1 ,gid='` + gid + `',create_times=now()   where data_cid='` + msg.DataCid + `'`
+	table := config.GetConfig().Mysql.Table
+	sqlx := `UPDATE  '` + table + `' set  file_active=1 ,locked=1 ,gid='` + gid + `',create_times=now()   where data_cid='` + msg.DataCid + `'`
 	log.Debug(sqlx)
 	if err = orm.Eloquent.Exec(sqlx).Error; err != nil {
 		return
@@ -38,7 +41,8 @@ func UpdateSetDownload1(msg *FilSwan, gid string) (err error) { // 下载中
 }
 
 func UpdateSetDownload2(msg *FilSwan, gid string, path string) (err error) {
-	sqlx := `UPDATE  filswan set  file_active=2 ,locked=0 ,update_times=now() ,local_path='` + path + `'  where data_cid='` + msg.DataCid + `' AND gid = '` + gid + `'`
+	table := config.GetConfig().Mysql.Table
+	sqlx := `UPDATE  '` + table + `' set  file_active=2 ,locked=0 ,update_times=now() ,local_path='` + path + `'  where data_cid='` + msg.DataCid + `' AND gid = '` + gid + `'`
 	log.Debug(sqlx)
 	if err = orm.Eloquent.Debug().Exec(sqlx).Error; err != nil {
 		return
@@ -47,8 +51,9 @@ func UpdateSetDownload2(msg *FilSwan, gid string, path string) (err error) {
 }
 
 func GetFindOne() (*FilSwan, error) {
+	table := config.GetConfig().Mysql.Table
 	sk := FilSwan{}
-	sqlx := `select * from filswan where file_active=0   limit 0,1`
+	sqlx := `select * from   '` + table + `' where file_active=0   limit 0,1`
 	log.Debug(sqlx)
 	if err := orm.Eloquent.Raw(sqlx).Scan(&sk).Error; err != nil {
 		return nil, nil
@@ -57,7 +62,8 @@ func GetFindOne() (*FilSwan, error) {
 }
 
 func GeTGId() (ret []*FilSwan, err error) {
-	sqlx := `select  * from  filswan where file_active=1  AND  locked=1 `
+	table := config.GetConfig().Mysql.Table
+	sqlx := `select  * from    '` + table + `' where file_active=1  AND  locked=1 `
 	log.Debug(sqlx)
 	if err = orm.Eloquent.Raw(sqlx).Scan(&ret).Error; err != nil {
 		return
@@ -66,7 +72,8 @@ func GeTGId() (ret []*FilSwan, err error) {
 }
 
 func GeTLocked() (ret []*FilSwan, err error) {
-	sqlx := `select  * from  filswan where locked=1`
+	table := config.GetConfig().Mysql.Table
+	sqlx := `select  * from    '` + table + `' where locked=1`
 	log.Debug(sqlx)
 	if err = orm.Eloquent.Raw(sqlx).Scan(&ret).Error; err != nil {
 		return
@@ -81,12 +88,13 @@ type Dw struct {
 }
 
 func GetCount() (ret []*Dw, err error) {
+	table := config.GetConfig().Mysql.Table
 	sqlx := `select sum(skt) as downloading  ,sum(stk) as downloaded , sum(toal) total   from  (
-    select  count(data_cid) as  skt ,0 as stk , 0 as toal  from  filswan where  locked=1
+    select  count(data_cid) as  skt ,0 as stk , 0 as toal  from   '` + table + `' where  locked=1
     union  all
-    select  0 as skt , count(data_cid) as stk  ,0 as toal from filswan where file_active=2
+    select  0 as skt , count(data_cid) as stk  ,0 as toal from  '` + table + `' where file_active=2
     union  all
-    select    0 as skt , 0 as stk , count(data_cid) as toal from filswan
+    select    0 as skt , 0 as stk , count(data_cid) as toal from  '` + table + `'
     )a`
 	log.Debug(sqlx)
 	if err = orm.Eloquent.Raw(sqlx).Scan(&ret).Error; err != nil {
