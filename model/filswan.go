@@ -17,6 +17,7 @@ type FilSwan struct {
 	Import      string `gorm:"column:import_successful" json:"import_successful"`
 	CreateTimes string `gorm:"column:create_times" json:"create_times"`
 	UpdateTimes string `gorm:"column:update_times" json:"update_times"`
+	LocalPath   string `gorm:"column:local_path" json:"local_path"`
 }
 
 func GetAll() (ret []*FilSwan, err error) {
@@ -27,8 +28,8 @@ func GetAll() (ret []*FilSwan, err error) {
 	}
 	return
 }
-func UpdateSetDownload1(msg *FilSwan, gid string) (err error) { // 下载中
-	sqlx := `UPDATE  filswan set  file_active=1 ,locked=1 ,gid='` + gid + `',create_times=now()  where data_cid='` + msg.DataCid + `'`
+func UpdateSetDownload1(msg *FilSwan, gid, path string) (err error) { // 下载中
+	sqlx := `UPDATE  filswan set  file_active=1 ,locked=1 ,gid='` + gid + `',create_times=now() ,local_path='` + path + `'  where data_cid='` + msg.DataCid + `'`
 	log.Debug(sqlx)
 	if err = orm.Eloquent.Exec(sqlx).Error; err != nil {
 		return
