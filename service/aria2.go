@@ -135,7 +135,7 @@ func (aria2Service *Aria2Service) CheckDownloadStatus4Deal(aria2Client *Aria2Cli
 		log.Info(deal, "  下载完成  ", fileSizeDownloaded)
 		log.Info(deal.FileSize, "==", fileSizeDownloaded)
 		if fileSizeDownloaded >= 0 {
-			if err := model.UpdateSetDownload2(deal, gid); err != nil {
+			if err := model.UpdateSetDownload2(deal, gid, filePath); err != nil {
 				return
 			}
 			log.Info(deal, DEAL_STATUS_DOWNLOADED, &filePath, "download gid:"+gid)
@@ -169,7 +169,7 @@ func (aria2Service *Aria2Service) StartDownload4Deal(deal *model.FilSwan, aria2C
 	outDir := filepath.Join(aria2Service.DownloadDir, strconv.Itoa(0), timeStr)
 
 	aria2Download := aria2Client.DownloadFile(deal.DownloadUrl, outDir, outFilename)
-	if err = model.UpdateSetDownload1(deal, aria2Download.Gid, outDir); err != nil { //  1 4
+	if err = model.UpdateSetDownload1(deal, aria2Download.Gid); err != nil { //  1 4
 		log.Error("改状态失败")
 		return
 	}
