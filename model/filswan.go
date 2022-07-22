@@ -53,7 +53,7 @@ func UpdateSetDownload2(msg *FilSwan, gid string, path string) (err error) {
 func UpdateSetDownload1s(msg *FilSwan, gid string) (err error) { // 下载中
 	//table := config.GetConfig().Mysql.Table
 	table := "filswan"
-	sqlx := `UPDATE  ` + table + ` set  file_active=1 ,locked=1 ,gid='` + gid + `',create_times=now()   where data_cid='` + msg.DataCid + `'`
+	sqlx := `UPDATE  ` + table + ` set  file_active=1  ,gid='` + gid + `',create_times=now()   where data_cid='` + msg.DataCid + `'`
 	log.Debug(sqlx)
 	if err = orm.Eloquent.Exec(sqlx).Error; err != nil {
 		return
