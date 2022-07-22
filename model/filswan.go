@@ -132,18 +132,29 @@ func GetCount() (ret []*Dw, err error) {
 	//union  all
 	//select    0 as skt , 0 as stk , count(data_cid) as toal from filswan197  where import_successful<>1
 	//)a`
-	sqlx := `select sum(skt) as downloading  ,sum(stk) as downloaded ,sum(toal) total  ,sum(av)  as actv from  (
+	//sqlx := `select sum(skt) as downloading  ,sum(stk) as downloaded ,sum(toal) total  ,sum(av)  as actv from  (
+	//select  count(data_cid) as  skt ,0 as stk , 0 as toal ,0 as av  from  filswan where  locked=1
+	//union  all
+	//select  count(data_cid) as  skt ,0 as stk , 0 as toal,0 as av  from  filswan197 where  locked=1
+	//union  all
+	//select  0 as skt , count(data_cid) as stk  ,0 as toal,0 as av from filswan    where file_active=2 AND import_successful<>1
+	//union  all
+	//select    0 as skt , 0 as stk , count(data_cid) as toal,0 as av from filswan  where import_successful<>1
+	//union  all
+	//select  0 as skt , count(data_cid) as stk  ,0 as toal,0 as av from filswan197   where file_active=2 AND import_successful<>1
+	//union  all
+	//select    0 as skt , 0 as stk , count(data_cid) as toal ,0 as av  from filswan197  where import_successful<>0
+	//union  all
+	//select    0 as skt , 0 as stk , 0 as toal ,count(data_cid) as av  from filswan  where import_successful<>0
+	//)a`
+	sqlx := `select sum(skt) as downloading  ,sum(stk) as downloaded ,sum(toal) total  ,sum(av)   as actv from  (
     select  count(data_cid) as  skt ,0 as stk , 0 as toal ,0 as av  from  filswan where  locked=1
     union  all
     select  count(data_cid) as  skt ,0 as stk , 0 as toal,0 as av  from  filswan197 where  locked=1
     union  all
-    select  0 as skt , count(data_cid) as stk  ,0 as toal,0 as av from filswan    where file_active=2 AND import_successful<>1
+    select  0 as skt , count(data_cid) as stk  ,0 as toal,0 as av from filswan    where file_active=2
     union  all
-    select    0 as skt , 0 as stk , count(data_cid) as toal,0 as av from filswan  where import_successful<>1
-    union  all
-    select  0 as skt , count(data_cid) as stk  ,0 as toal,0 as av from filswan197   where file_active=2 AND import_successful<>1
-    union  all
-    select    0 as skt , 0 as stk , count(data_cid) as toal ,0 as av  from filswan197  where import_successful<>0
+    select    0 as skt , 0 as stk , count(data_cid) as toal,0 as av from filswan
     union  all
     select    0 as skt , 0 as stk , 0 as toal ,count(data_cid) as av  from filswan  where import_successful<>0
     )a`
