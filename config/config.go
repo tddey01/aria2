@@ -24,6 +24,7 @@ type mysql struct {
 	MaxIdleConn int    `toml:"MaxIdleConn"`
 	MaxOpenConn int    `toml:"MaxOpenConn"`
 	Table       string `toml:"table"`
+	Enable      bool   `toml:"enable"`
 }
 type logs struct {
 	MaxSize    int    `toml:"maxsize"`
@@ -86,6 +87,7 @@ func requiredFieldsAreGiven(metaData toml.MetaData) bool {
 		{"mysql", "MaxIdleConn"},
 		{"mysql", "MaxOpenConn"},
 		{"mysql", "table"},
+		{"mysql", "enable"},
 
 		{"logs", "maxsize"},
 		{"logs", "backups"},
