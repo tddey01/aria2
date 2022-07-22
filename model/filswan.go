@@ -107,6 +107,7 @@ type Dw struct {
 	Downloading string `gorm:"column:downloading" json:"downloading"`
 	Downloaded  string `gorm:"column:downloaded" json:"downloaded"`
 	Total       string `gorm:"column:total" json:"total"`
+	Atcv        string `gorm:"column:actv" json:"actv"`
 }
 
 func GetCount() (ret []*Dw, err error) {
@@ -118,18 +119,33 @@ func GetCount() (ret []*Dw, err error) {
 	//union  all
 	//select    0 as skt , 0 as stk , count(data_cid) as toal from  ` + table + `
 	//)a`
-	sqlx := `select sum(skt) as downloading  ,sum(stk) as downloaded ,sum(toal) total   from  (
-    select  count(data_cid) as  skt ,0 as stk , 0 as toal  from  filswan where  locked=1
+	//sqlx := `select sum(skt) as downloading  ,sum(stk) as downloaded ,sum(toal) total   from  (
+	//select  count(data_cid) as  skt ,0 as stk , 0 as toal  from  filswan where  locked=1
+	//union  all
+	//select  count(data_cid) as  skt ,0 as stk , 0 as toal  from  filswan197 where  locked=1
+	//union  all
+	//select  0 as skt , count(data_cid) as stk  ,0 as toal from filswan    where file_active=2 AND import_successful<>1
+	//union  all
+	//select    0 as skt , 0 as stk , count(data_cid) as toal from filswan  where import_successful<>1
+	//union  all
+	//select  0 as skt , count(data_cid) as stk  ,0 as toal from filswan197    where file_active=2 AND import_successful<>1
+	//union  all
+	//select    0 as skt , 0 as stk , count(data_cid) as toal from filswan197  where import_successful<>1
+	//)a`
+	sqlx := `select sum(skt) as downloading  ,sum(stk) as downloaded ,sum(toal) total  ,sum(av)  as actv from  (
+    select  count(data_cid) as  skt ,0 as stk , 0 as toal ,0 as av  from  filswan where  locked=1
     union  all
-    select  count(data_cid) as  skt ,0 as stk , 0 as toal  from  filswan197 where  locked=1
+    select  count(data_cid) as  skt ,0 as stk , 0 as toal,0 as av  from  filswan197 where  locked=1
     union  all
-    select  0 as skt , count(data_cid) as stk  ,0 as toal from filswan    where file_active=2 AND import_successful<>1
+    select  0 as skt , count(data_cid) as stk  ,0 as toal,0 as av from filswan    where file_active=2 AND import_successful<>1
     union  all
-    select    0 as skt , 0 as stk , count(data_cid) as toal from filswan  where import_successful<>1
+    select    0 as skt , 0 as stk , count(data_cid) as toal,0 as av from filswan  where import_successful<>1
     union  all
-    select  0 as skt , count(data_cid) as stk  ,0 as toal from filswan197    where file_active=2 AND import_successful<>1
+    select  0 as skt , count(data_cid) as stk  ,0 as toal,0 as av from filswan197   where file_active=2 AND import_successful<>1
     union  all
-    select    0 as skt , 0 as stk , count(data_cid) as toal from filswan197  where import_successful<>1
+    select    0 as skt , 0 as stk , count(data_cid) as toal ,0 as av  from filswan197  where import_successful<>0
+    union  all
+    select    0 as skt , 0 as stk , 0 as toal ,count(data_cid) as av  from filswan  where import_successful<>0
     )a`
 	log.Debug(sqlx)
 	if err = orm.Eloquent.Raw(sqlx).Scan(&ret).Error; err != nil {

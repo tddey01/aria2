@@ -35,14 +35,17 @@ func BlockTotalCount() (err error) {
 		return err
 	}
 
-	down, _ := strconv.Atoi(datacount[0].Downloaded)
-	count, _ := strconv.Atoi(datacount[0].Total)
+	down, _ := strconv.Atoi(datacount[0].Downloaded) // 正在下载中
+	count, _ := strconv.Atoi(datacount[0].Total)     // 总数
+	act, _ := strconv.Atoi(datacount[0].Atcv)        // 封装数量
 
-	total := (float64(down) / float64(count)) * 100
-
+	total := (float64(down) / float64(count)) * 100 // 下载占比
+	actv := (float64(act) / float64(count)) * 100   // 封装百分比
 	Totals := strconv.FormatFloat(total, 'f', 2, 64)
+	Actvls := strconv.FormatFloat(actv, 'f', 2, 64)
 
-	str += fmt.Sprintf("\n正在下载中 >>>>：%s  \n已完成下载 >>>>: %s  \n 下进度百分比 >>>>: %v%% ", datacount[0].Downloading, datacount[0].Downloaded, Totals) //节点：f080468  有效算力: 6.432 PiB  今日块: 3  24h幸运值：80.00% 3日内块：2
+	str += fmt.Sprintf("\n正在下载中 >>>>>>> ：%s \n已完成下载 >>>>>>> : %s \n下载进度百分比>>>>> : %v%% \n已完成封装总数 >>>> : %v \n封装进度百分比 >>>> : %v%%",
+		datacount[0].Downloading, datacount[0].Downloaded, Totals, datacount[0].Atcv, Actvls)
 	log.Debug(" 发消息 企业微信你")
 	restp := &Msg{
 		Touser:  "@all",
