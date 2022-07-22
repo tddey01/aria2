@@ -3,13 +3,15 @@ package main
 import (
 	"fmt"
 	"github.com/gin-gonic/gin"
+	"github.com/tddey01/aria2/config"
 	"github.com/tddey01/aria2/service"
 	"log"
 	"os"
 	"strconv"
 )
 
-const  	URL_HOST_GET_COMMON    = "/common"
+const URL_HOST_GET_COMMON = "/common"
+
 func main() {
 	if len(os.Args) < 2 {
 		printUsage()
@@ -22,7 +24,9 @@ func main() {
 		printVersion()
 	case "daemon":
 		service.AdminOfflineDeal()
-		service.BlockStartNewTotal3()
+		if config.GetConfig().Watch.Enable {
+			service.BlockStartNewTotal3()
+		}
 		createHttpServer()
 	default:
 		printUsage()

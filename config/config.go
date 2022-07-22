@@ -35,6 +35,10 @@ type main struct {
 	LogName string `toml:"LogName"`
 }
 
+type watch struct {
+	Enable bool `toml:"enable"`
+}
+
 type Configuration struct {
 	Port    int   `toml:"port"`
 	Release bool  `toml:"release"`
@@ -42,6 +46,7 @@ type Configuration struct {
 	Main    main  `toml:"main"`
 	Mysql   mysql `toml:"mysql"`
 	Logs    logs  `toml:"logs"`
+	Watch   watch `toml:"watch"`
 }
 
 var config *Configuration
@@ -62,6 +67,7 @@ func requiredFieldsAreGiven(metaData toml.MetaData) bool {
 		{"main"},
 		{"mysql"},
 		{"logs"},
+		{"watch"},
 
 		{"aria2", "aria2_download_dir"},
 		{"aria2", "aria2_host"},
@@ -85,6 +91,8 @@ func requiredFieldsAreGiven(metaData toml.MetaData) bool {
 		{"logs", "backups"},
 		{"logs", "day"},
 		{"logs", "level"},
+
+		{"watch", "enable"},
 	}
 
 	for _, v := range requiredFields {
