@@ -13,12 +13,14 @@ type FilSwan struct {
 	DownloadUrl string `gorm:"column:download_url" json:"download_url"`
 	FileActive  string `gorm:"column:file_active" json:"file_active"`
 	//FileError   string `gorm:"column:file_error" json:"file_error"`
-	Locked      string `gorm:"column:locked" json:"locked"`
-	GId         string `gorm:"column:gid" json:"gid"`
-	Import      string `gorm:"column:import_successful" json:"import_successful"`
-	CreateTimes string `gorm:"column:create_times" json:"create_times"`
-	UpdateTimes string `gorm:"column:update_times" json:"update_times"`
-	LocalPath   string `gorm:"column:local_path" json:"local_path"`
+	Locked          string `gorm:"column:locked" json:"locked"`
+	GId             string `gorm:"column:gid" json:"gid"`
+	Import          string `gorm:"column:import_successful" json:"import_successful"`
+	CreateTimes     string `gorm:"column:create_times" json:"create_times"`
+	UpdateTimes     string `gorm:"column:update_times" json:"update_times"`
+	LocalPath       string `gorm:"column:local_path" json:"local_path"`
+	Successful      string `gorm:"column:successful" json:"successful"`
+	TimesSuccessful string `gorm:"column:times_successful" json:"times_successful"`
 }
 
 func GetAll() (ret []*FilSwan, err error) {
@@ -108,6 +110,7 @@ type Dw struct {
 	Downloaded  string `gorm:"column:downloaded" json:"downloaded"`
 	Total       string `gorm:"column:total" json:"total"`
 	Atcv        string `gorm:"column:actv" json:"actv"`
+	Successful  string `gorm:"column:successful" json:"successful"`
 }
 
 func GetCount() (ret []*Dw, err error) {
@@ -147,17 +150,17 @@ func GetCount() (ret []*Dw, err error) {
 	//union  all
 	//select    0 as skt , 0 as stk , 0 as toal ,count(data_cid) as av  from filswan  where import_successful<>0
 	//)a`
-	sqlx := `select sum(skt) as downloading  ,sum(stk) as downloaded ,sum(toal) total  ,sum(av)   as actv from  (
-    select  count(data_cid) as  skt ,0 as stk , 0 as toal ,0 as av  from  filswan where  locked=1
-    union  all
-    select  count(data_cid) as  skt ,0 as stk , 0 as toal,0 as av  from  filswan197 where  locked=1
-    union  all
-    select  0 as skt , count(data_cid) as stk  ,0 as toal,0 as av from filswan    where file_active=2
-    union  all
-    select    0 as skt , 0 as stk , count(data_cid) as toal,0 as av from filswan
-    union  all
-    select    0 as skt , 0 as stk , 0 as toal ,count(data_cid) as av  from filswan  where import_successful<>0
-    )a`
+	sqlx := `select sum(skt) as downloading  ,sum(stk) as downloaded ,sum(toal) total  ,sum(av)   as actv ,sum(suc) as success from  (
+		select  count(data_cid) as  skt ,0 as stk , 0 as toal ,0 as av ,0 as suc from  filswan where  locked=1
+		union  all
+		select  0 as skt , count(data_cid) as stk  ,0 as toal,0 as av,0 as suc  from filswan    where file_active=2
+		union  all
+		select    0 as skt , 0 as stk , count(data_cid) as toal,0 as av,0 as suc  from filswan
+		union  all
+		select    0 as skt , 0 as stk , 0 as toal ,count(data_cid) as av,0 as suc   from filswan  where import_successful<>0
+		union  all
+		select    0 as skt , 0 as stk , 0 as toal ,0 as av,count(data_cid) as suc  from filswan  where successful<>0
+	)a`
 	log.Debug(sqlx)
 	if err = orm.Eloquent.Raw(sqlx).Scan(&ret).Error; err != nil {
 		return

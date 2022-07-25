@@ -17,17 +17,21 @@ LogName = "./logs"
 
 [mysql]
 DbType = "mysql"
-host = "127.0.0.1"  #
+host = "10.0.3.1"  #
 port = 3306
 dbname = "aria2"
 users = "root"
 passwd = "yungo2020!@"
 MaxIdleConn = 50
 MaxOpenConn =  100
-
+table = "filswan"
+enable=false
 
 [logs]
 maxsize = 1024   #   file max size  1024M
 backups = 10  # file backup 10 day
 day = 7  #
 level = "DEBUG" # level  Debug
+
+[watch]
+enable = true
