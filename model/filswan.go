@@ -110,7 +110,7 @@ type Dw struct {
 	Downloaded  string `gorm:"column:downloaded" json:"downloaded"`
 	Total       string `gorm:"column:total" json:"total"`
 	Atcv        string `gorm:"column:actv" json:"actv"`
-	Successful  string `gorm:"column:successful" json:"successful"`
+	Successful  string `gorm:"column:success" json:"success"`
 }
 
 func GetCount() (ret []*Dw, err error) {
