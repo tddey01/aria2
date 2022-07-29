@@ -159,8 +159,13 @@ func (aria2Service *Aria2Service) StartDownload4Deal(deal *model.FilSwan, aria2C
 		log.Info(deal, DEAL_STATUS_DOWNLOAD_FAILED, "parse source file url error,", err.Error())
 		return
 	}
+	switch {
+	case config.GetConfig().Typeof.FilSwan:
+		log.Info("下载文件大小 ", deal.FileSize, "   ", deal.DataCid)
 
-	log.Info("下载文件大小 ", deal.FileSize, "   ", deal.DataCid)
+	case config.GetConfig().Typeof.BiGd:
+		log.Info("下载文件 ", deal.DownloadUrl)
+	}
 
 	outFilename := urlInfo.Path
 	if strings.HasPrefix(urlInfo.RawQuery, "filename=") {

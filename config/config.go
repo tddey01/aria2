@@ -41,13 +41,19 @@ type watch struct {
 }
 
 type Configuration struct {
-	Port    int   `toml:"port"`
-	Release bool  `toml:"release"`
-	Aria2   aria2 `toml:"aria2"`
-	Main    main  `toml:"main"`
-	Mysql   mysql `toml:"mysql"`
-	Logs    logs  `toml:"logs"`
-	Watch   watch `toml:"watch"`
+	Port    int    `toml:"port"`
+	Release bool   `toml:"release"`
+	Aria2   aria2  `toml:"aria2"`
+	Main    main   `toml:"main"`
+	Mysql   mysql  `toml:"mysql"`
+	Logs    logs   `toml:"logs"`
+	Watch   watch  `toml:"watch"`
+	Typeof  typeof `toml:"typeof"`
+}
+
+type typeof struct {
+	FilSwan bool `toml:"FilSwan"`
+	BiGd    bool `toml:"BiGd"`
 }
 
 var config *Configuration
@@ -69,6 +75,7 @@ func requiredFieldsAreGiven(metaData toml.MetaData) bool {
 		{"mysql"},
 		{"logs"},
 		{"watch"},
+		{"typeof"},
 
 		{"aria2", "aria2_download_dir"},
 		{"aria2", "aria2_host"},
@@ -95,6 +102,9 @@ func requiredFieldsAreGiven(metaData toml.MetaData) bool {
 		{"logs", "level"},
 
 		{"watch", "enable"},
+
+		{"typeof", "FilSwan"},
+		{"typeof", "BiGd"},
 	}
 
 	for _, v := range requiredFields {

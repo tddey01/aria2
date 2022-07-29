@@ -34,7 +34,14 @@ func GetAll() (ret []*FilSwan, err error) {
 }
 func UpdateSetDownload1(msg *FilSwan, gid string) (err error) { // 下载中
 	table := config.GetConfig().Mysql.Table
-	sqlx := `UPDATE  ` + table + ` set  file_active=1 ,locked=1 ,gid='` + gid + `',create_times=now()   where data_cid='` + msg.DataCid + `'`
+	sqlx := ``
+	switch {
+	case config.GetConfig().Typeof.FilSwan:
+		sqlx = `UPDATE  ` + table + ` set  file_active=1  ,gid='` + gid + `',create_times=now()   where data_cid='` + msg.DataCid + `'`
+
+	case config.GetConfig().Typeof.BiGd:
+		sqlx = `UPDATE  ` + table + ` set  file_active=1  ,gid='` + gid + `',create_times=now()   where download_url='` + msg.DownloadUrl + `'`
+	}
 	log.Debug(sqlx)
 	if err = orm.Eloquent.Exec(sqlx).Error; err != nil {
 		return
@@ -44,7 +51,15 @@ func UpdateSetDownload1(msg *FilSwan, gid string) (err error) { // 下载中
 
 func UpdateSetDownload2(msg *FilSwan, gid string, path string) (err error) {
 	table := config.GetConfig().Mysql.Table
-	sqlx := `UPDATE  ` + table + `  set  file_active=2 ,locked=0 ,update_times=now() ,local_path='` + path + `'  where data_cid='` + msg.DataCid + `' AND gid = '` + gid + `'`
+
+	sqlx := ``
+	switch {
+	case config.GetConfig().Typeof.FilSwan:
+		sqlx = `UPDATE  ` + table + `  set  file_active=2 ,locked=0 ,update_times=now() ,local_path='` + path + `'  where data_cid='` + msg.DataCid + `' AND gid = '` + gid + `'`
+
+	case config.GetConfig().Typeof.BiGd:
+		sqlx = `UPDATE  ` + table + ` set  file_active=2 ,locked=0 ,update_times=now() ,local_path='` + path + `' where download_url='` + msg.DownloadUrl + `' AND gid = '` + gid + `'`
+	}
 	log.Debug(sqlx)
 	if err = orm.Eloquent.Debug().Exec(sqlx).Error; err != nil {
 		return
@@ -53,9 +68,15 @@ func UpdateSetDownload2(msg *FilSwan, gid string, path string) (err error) {
 }
 
 func UpdateSetDownload1s(msg *FilSwan, gid string) (err error) { // 下载中
-	//table := config.GetConfig().Mysql.Table
-	table := "filswan"
-	sqlx := `UPDATE  ` + table + ` set  file_active=1  ,gid='` + gid + `',create_times=now()   where data_cid='` + msg.DataCid + `'`
+	table := config.GetConfig().Mysql.Table
+	sqlx := ``
+	switch {
+	case config.GetConfig().Typeof.FilSwan:
+		sqlx = `UPDATE  ` + table + ` set  file_active=1  ,gid='` + gid + `',create_times=now()   where data_cid='` + msg.DataCid + `'`
+
+	case config.GetConfig().Typeof.BiGd:
+		sqlx = `UPDATE  ` + table + ` set  file_active=1  ,gid='` + gid + `',create_times=now()   where download_url='` + msg.DownloadUrl + `'`
+	}
 	log.Debug(sqlx)
 	if err = orm.Eloquent.Exec(sqlx).Error; err != nil {
 		return
@@ -64,9 +85,17 @@ func UpdateSetDownload1s(msg *FilSwan, gid string) (err error) { // 下载中
 }
 
 func UpdateSetDownload2s(msg *FilSwan, gid string, path string) (err error) {
-	//table := config.GetConfig().Mysql.Table
-	table := "filswan"
-	sqlx := `UPDATE  ` + table + `  set  file_active=2 ,locked=0 ,update_times=now() ,local_path='` + path + `'  where data_cid='` + msg.DataCid + `' AND gid = '` + gid + `'`
+	table := config.GetConfig().Mysql.Table
+
+	sqlx := ``
+	switch {
+	case config.GetConfig().Typeof.FilSwan:
+		sqlx = `UPDATE  ` + table + `  set  file_active=2 ,locked=0 ,update_times=now() ,local_path='` + path + `'  where data_cid='` + msg.DataCid + `' AND gid = '` + gid + `'`
+
+	case config.GetConfig().Typeof.BiGd:
+		sqlx = `UPDATE  ` + table + ` set  file_active=2 ,locked=0 ,update_times=now() ,local_path='` + path + `' where download_url='` + msg.DownloadUrl + `' AND gid = '` + gid + `'`
+	}
+
 	log.Debug(sqlx)
 	if err = orm.Eloquent.Debug().Exec(sqlx).Error; err != nil {
 		return
