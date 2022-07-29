@@ -108,7 +108,7 @@ func UpdateSetDownload2s(msg *FilSwan, gid string, path string, size int64) (err
 func GetFindOne() (*FilSwan, error) {
 	table := config.GetConfig().Mysql.Table
 	sk := FilSwan{}
-	sqlx := `select * from   ` + table + `  where file_active=0   limit 0,1`
+	sqlx := `select * from   ` + table + `  where file_active=0   limit 0,5`
 	log.Debug(sqlx)
 	if err := orm.Eloquent.Raw(sqlx).Scan(&sk).Error; err != nil {
 		return nil, nil
