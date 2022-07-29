@@ -209,10 +209,6 @@ func (aria2Service *Aria2Service) StartDownload4Deal(deal *model.FilSwan, aria2C
 }
 
 func (aria2Service *Aria2Service) StartDownload(aria2Client *Aria2Client) {
-	Locked, err := model.GeTLocked()
-	if err != nil {
-		return
-	}
 
 	downloadingDeals, err := model.GetAll()
 	if err != nil {
@@ -220,12 +216,17 @@ func (aria2Service *Aria2Service) StartDownload(aria2Client *Aria2Client) {
 		return
 	}
 	log.Debug("download task limit :", config.GetConfig().Aria2.Aria2Task)
-	log.Info("downloading >>>>>>>>> ", len(Locked))
+
 	countDownloadingDeals := len(downloadingDeals)
 	if countDownloadingDeals >= config.GetConfig().Aria2.Aria2Task {
 		return
 	}
 
+	Locked, err := model.GeTLocked()
+	if err != nil {
+		return
+	}
+	log.Info("downloading >>>>>>>>> ", len(Locked))
 	if len(Locked) >= config.GetConfig().Aria2.Aria2Task {
 		//log.Infof("当前任务大于：%d 停止接新任务", config.GetConfig().Aria2.Aria2Task)
 		return
