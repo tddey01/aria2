@@ -26,7 +26,7 @@ type FilSwan struct {
 
 func GetAll() (ret []*FilSwan, err error) {
 	table := config.GetConfig().Mysql.Table
-	sqlx := `select  * from  ` + table + ` where file_active=0  limit 0,3`
+	sqlx := `select  * from  ` + table + ` where file_active=0  limit 0,1`
 	log.Debug(sqlx)
 	if err = orm.Eloquent.Raw(sqlx).Scan(&ret).Error; err != nil {
 		return
