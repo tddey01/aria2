@@ -74,10 +74,10 @@ func UpdateSetDownload1s(msg *FilSwan, gid string) (err error) { // 下载中
 	sqlx := ``
 	switch {
 	case config.GetConfig().Typeof.FilSwan:
-		sqlx = `UPDATE  ` + table + ` set  file_active=1  ,gid='` + gid + `',create_times=now()   where data_cid='` + msg.DataCid + `'`
+		sqlx = `UPDATE  ` + table + ` set  file_active=1  ,locked=1 , gid='` + gid + `',create_times=now()   where data_cid='` + msg.DataCid + `'`
 
 	case config.GetConfig().Typeof.BiGd:
-		sqlx = `UPDATE  ` + table + ` set  file_active=1  ,gid='` + gid + `',create_times=now()   where download_url='` + msg.DownloadUrl + `'`
+		sqlx = `UPDATE  ` + table + ` set  file_active=1  ,locked=1  ,gid='` + gid + `',create_times=now()   where download_url='` + msg.DownloadUrl + `'`
 	}
 	log.Debug(sqlx)
 	if err = orm.Eloquent.Exec(sqlx).Error; err != nil {
