@@ -136,11 +136,11 @@ func (aria2Service *Aria2Service) CheckDownloadStatus4Deal(aria2Client *Aria2Cli
 		log.Info(deal.FileSize, "==", fileSizeDownloaded)
 		if fileSizeDownloaded >= 0 {
 			if config.GetConfig().Mysql.Enable {
-				if err := model.UpdateSetDownload2s(deal, gid, filePath); err != nil {
+				if err := model.UpdateSetDownload2s(deal, gid, filePath, fileSizeDownloaded); err != nil {
 					return
 				}
 			}
-			if err := model.UpdateSetDownload2(deal, gid, filePath); err != nil {
+			if err := model.UpdateSetDownload2(deal, gid, filePath, fileSizeDownloaded); err != nil {
 				return
 			}
 			log.Info(deal, DEAL_STATUS_DOWNLOADED, &filePath, "download gid:"+gid)

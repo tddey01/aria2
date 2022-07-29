@@ -1,6 +1,7 @@
 package model
 
 import (
+	"fmt"
 	"github.com/tddey01/aria2/config"
 	orm "github.com/tddey01/aria2/drive/mysql"
 )
@@ -49,17 +50,18 @@ func UpdateSetDownload1(msg *FilSwan, gid string) (err error) { // 下载中
 	return
 }
 
-func UpdateSetDownload2(msg *FilSwan, gid string, path string) (err error) {
+func UpdateSetDownload2(msg *FilSwan, gid string, path string, size int64) (err error) {
 	table := config.GetConfig().Mysql.Table
 
 	sqlx := ``
 	switch {
 	case config.GetConfig().Typeof.FilSwan:
-		sqlx = `UPDATE  ` + table + `  set  file_active=2 ,locked=0 ,update_times=now() ,local_path='` + path + `'  where data_cid='` + msg.DataCid + `' AND gid = '` + gid + `'`
+		sqlx = `UPDATE  ` + table + `  set  file_active=2 ,locked=0 ,update_times=now() ,local_path='` + path + `' ,file_size=%d  where data_cid='` + msg.DataCid + `' AND gid = '` + gid + `'`
 
 	case config.GetConfig().Typeof.BiGd:
-		sqlx = `UPDATE  ` + table + ` set  file_active=2 ,locked=0 ,update_times=now() ,local_path='` + path + `' where download_url='` + msg.DownloadUrl + `' AND gid = '` + gid + `'`
+		sqlx = `UPDATE  ` + table + ` set  file_active=2 ,locked=0 ,update_times=now() ,local_path='` + path + `' ,file_size=%d  where download_url='` + msg.DownloadUrl + `' AND gid = '` + gid + `'`
 	}
+	sqlx = fmt.Sprintf(sqlx, size)
 	log.Debug(sqlx)
 	if err = orm.Eloquent.Debug().Exec(sqlx).Error; err != nil {
 		return
@@ -84,18 +86,18 @@ func UpdateSetDownload1s(msg *FilSwan, gid string) (err error) { // 下载中
 	return
 }
 
-func UpdateSetDownload2s(msg *FilSwan, gid string, path string) (err error) {
+func UpdateSetDownload2s(msg *FilSwan, gid string, path string, size int64) (err error) {
 	table := config.GetConfig().Mysql.Table
 
 	sqlx := ``
 	switch {
 	case config.GetConfig().Typeof.FilSwan:
-		sqlx = `UPDATE  ` + table + `  set  file_active=2 ,locked=0 ,update_times=now() ,local_path='` + path + `'  where data_cid='` + msg.DataCid + `' AND gid = '` + gid + `'`
+		sqlx = `UPDATE  ` + table + `  set  file_active=2 ,locked=0 ,update_times=now() ,local_path='` + path + `' ,file_size=%d    where data_cid='` + msg.DataCid + `' AND gid = '` + gid + `'`
 
 	case config.GetConfig().Typeof.BiGd:
-		sqlx = `UPDATE  ` + table + ` set  file_active=2 ,locked=0 ,update_times=now() ,local_path='` + path + `' where download_url='` + msg.DownloadUrl + `' AND gid = '` + gid + `'`
+		sqlx = `UPDATE  ` + table + ` set  file_active=2 ,locked=0 ,update_times=now() ,local_path='` + path + `' ,file_size=%d   where download_url='` + msg.DownloadUrl + `' AND gid = '` + gid + `'`
 	}
-
+	sqlx = fmt.Sprintf(sqlx, size)
 	log.Debug(sqlx)
 	if err = orm.Eloquent.Debug().Exec(sqlx).Error; err != nil {
 		return
