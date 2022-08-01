@@ -251,7 +251,7 @@ func (aria2Service *Aria2Service) StartDownload(aria2Client *Aria2Client) {
 			break
 		}
 		aria2Service.StartDownload4Deal(deal2Download, aria2Client)
-		time.Sleep(1 * time.Minute)
+		time.Sleep(time.Second)
 	}
 
 }
