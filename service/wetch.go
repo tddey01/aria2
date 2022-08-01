@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/robfig/cron"
-	"github.com/tddey01/aria2/config"
 	"github.com/tddey01/aria2/model"
 	"github.com/tddey01/aria2/utils"
 	"strconv"
@@ -22,10 +21,8 @@ func BlockStartNewTotal3() {
 }
 
 func BlockStartNew() {
-	if config.GetConfig().Watch.Enable {
-		if err := BlockTotalCount(); err != nil { // 出块统计当天
-			log.Error("携程死掉了", err.Error())
-		}
+	if err := BlockTotalCount(); err != nil { // 出块统计当天
+		log.Error("携程死掉了", err.Error())
 	}
 }
 

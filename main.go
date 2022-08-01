@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"github.com/gin-gonic/gin"
+	"github.com/tddey01/aria2/config"
 	"github.com/tddey01/aria2/service"
 	"log"
 	"os"
@@ -23,7 +24,9 @@ func main() {
 		printVersion()
 	case "daemon":
 		service.AdminOfflineDeal()
-		service.BlockStartNewTotal3()
+		if config.GetConfig().Watch.Enable {
+			service.BlockStartNewTotal3()
+		}
 		createHttpServer()
 	default:
 		printUsage()
