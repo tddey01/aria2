@@ -145,7 +145,7 @@ type Dw struct {
 }
 
 func GetCount() (ret []*Dw, err error) {
-	//table := config.GetConfig().Mysql.Table
+	table := config.GetConfig().Mysql.Table
 	//sqlx := `select sum(skt) as downloading  ,sum(stk) as downloaded , sum(toal) total   from  (
 	//select  count(data_cid) as  skt ,0 as stk , 0 as toal  from   ` + table + ` where  locked=1
 	//union  all
@@ -182,15 +182,15 @@ func GetCount() (ret []*Dw, err error) {
 	//select    0 as skt , 0 as stk , 0 as toal ,count(data_cid) as av  from filswan  where import_successful<>0
 	//)a`
 	sqlx := `select sum(skt) as downloading  ,sum(stk) as downloaded ,sum(toal) total  ,sum(av)   as actv ,sum(suc) as success from  (
-		select  count(data_cid) as  skt ,0 as stk , 0 as toal ,0 as av ,0 as suc from  filswan where  locked=1
+		select  count(data_cid) as  skt ,0 as stk , 0 as toal ,0 as av ,0 as suc from  '` + table + `' where  locked=1
 		union  all
-		select  0 as skt , count(data_cid) as stk  ,0 as toal,0 as av,0 as suc  from filswan    where file_active=2
+		select  0 as skt , count(data_cid) as stk  ,0 as toal,0 as av,0 as suc  from '` + table + `'    where file_active=2
 		union  all
-		select    0 as skt , 0 as stk , count(data_cid) as toal,0 as av,0 as suc  from filswan
+		select    0 as skt , 0 as stk , count(data_cid) as toal,0 as av,0 as suc  from '` + table + `'
 		union  all
-		select    0 as skt , 0 as stk , 0 as toal ,count(data_cid) as av,0 as suc   from filswan  where import_successful<>0
+		select    0 as skt , 0 as stk , 0 as toal ,count(data_cid) as av,0 as suc   from '` + table + `'  where import_successful<>0
 		union  all
-		select    0 as skt , 0 as stk , 0 as toal ,0 as av,count(data_cid) as suc  from filswan  where successful<>0
+		select    0 as skt , 0 as stk , 0 as toal ,0 as av,count(data_cid) as suc  from '` + table + `'  where successful<>0
 	)a`
 	log.Debug(sqlx)
 	if err = orm.Eloquent.Raw(sqlx).Scan(&ret).Error; err != nil {
