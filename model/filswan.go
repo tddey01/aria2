@@ -118,7 +118,7 @@ func GetFindOne() (*FilSwan, error) {
 
 func GeTGId() (ret []*FilSwan, err error) {
 	table := config.GetConfig().Mysql.Table
-	sqlx := `select  * from    ` + table + ` where file_active=1 `
+	sqlx := `select  * from    ` + table + ` where locked=1 `
 	log.Debug(sqlx)
 	if err = orm.Eloquent.Raw(sqlx).Scan(&ret).Error; err != nil {
 		return
