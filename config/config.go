@@ -33,12 +33,12 @@ type main struct {
 	LogName string `toml:"LogName"`
 }
 
-type watch struct {
-	Enable     bool   `toml:"enable"`
-	CorPid     string `toml:"corPid"`
-	CorpSecret string `toml:"corpSecret"`
-	AGenTid    int    `toml:"aGenTid"`
-}
+//type watch struct {
+//	Enable     bool   `toml:"enable"`
+//	CorPid     string `toml:"corPid"`
+//	CorpSecret string `toml:"corpSecret"`
+//	AGenTid    int    `toml:"aGenTid"`
+//}
 
 type Configuration struct {
 	Port    int   `toml:"port"`
@@ -47,8 +47,8 @@ type Configuration struct {
 	Main    main  `toml:"main"`
 	Mysql   mysql `toml:"mysql"`
 	Logs    logs  `toml:"logs"`
-	Watch   watch `toml:"watch"`
-	Disk    disk  `toml:"disk"`
+	//Watch   watch `toml:"watch"`
+	Disk disk `toml:"disk"`
 }
 
 type disk struct {
@@ -73,7 +73,7 @@ func requiredFieldsAreGiven(metaData toml.MetaData) bool {
 		{"main"},
 		{"mysql"},
 		{"logs"},
-		{"watch"},
+		//{"watch"},
 		{"disk"},
 
 		{"aria2", "aria2_download_dir"},
@@ -97,10 +97,10 @@ func requiredFieldsAreGiven(metaData toml.MetaData) bool {
 		{"logs", "day"},
 		{"logs", "level"},
 
-		{"watch", "enable"},
-		{"watch", "corPid"},
-		{"watch", "corpSecret"},
-		{"watch", "aGenTid"},
+		//{"watch", "enable"},
+		//{"watch", "corPid"},
+		//{"watch", "corpSecret"},
+		//{"watch", "aGenTid"},
 
 		{"disk", "drive"},
 	}

@@ -17,13 +17,14 @@ LogName = "./logs"
 
 [mysql]
 DbType = "mysql"
-host = "10.0.3.1"  #
+host = "8.129.83.148"
 port = 3306
 dbname = "aria2"
 users = "root"
 passwd = "yungo2020!@"
-table = "filswan"
-enable = false
+table = "download"
+
+
 
 [logs]
 maxsize = 1024   #   file max size  1024M
@@ -31,9 +32,12 @@ backups = 10  # file backup 10 day
 day = 7  #
 level = "DEBUG" # level  Debug
 
-[watch]
+[watch]  # 企业微信机器人
 enable = false
+corPid = ""
+corpSecret = ""
+aGenTid =  000
 
 [disk]
-drive = "2"
+drive = "1"
 
