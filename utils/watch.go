@@ -45,9 +45,9 @@ type send_msg_error struct {
 	Errmsg  string `json:"errmsg"`
 }
 
-func SendMsg(msgbody []byte) error {
+func SendMsg(msgbody []byte, CorPid, CorpSecret string) error {
 
-	token, err := Get_token("wwd35f7cc4bb258205", "xDfDK6GenJsuDrSqIkKvVuN_TZlBa0iMMLkU0CTNbvU")
+	token, err := Get_token(CorPid, CorpSecret)
 	if err != nil {
 		println(err.Error())
 	}

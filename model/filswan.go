@@ -2,47 +2,35 @@ package model
 
 import (
 	"fmt"
-	"github.com/tddey01/aria2/config"
 	orm "github.com/tddey01/aria2/drive/mysql"
 )
 
 type FilSwan struct {
 	FileName    string `gorm:"column:file_name" json:"file_name"`
 	FileSize    uint64 `gorm:"column:file_size" json:"file_size"`
-	PieceCid    string `gorm:"column:piece_cid" json:"piece_cid"`
-	DataCid     string `gorm:"column:data_cid" json:"data_cid"`
 	DownloadUrl string `gorm:"column:download_url" json:"download_url"`
 	FileActive  string `gorm:"column:file_active" json:"file_active"`
-	//FileError   string `gorm:"column:file_error" json:"file_error"`
-	Locked          string `gorm:"column:locked" json:"locked"`
-	GId             string `gorm:"column:gid" json:"gid"`
-	Import          string `gorm:"column:import_successful" json:"import_successful"`
-	CreateTimes     string `gorm:"column:create_times" json:"create_times"`
-	UpdateTimes     string `gorm:"column:update_times" json:"update_times"`
-	LocalPath       string `gorm:"column:local_path" json:"local_path"`
-	Successful      string `gorm:"column:successful" json:"successful"`
-	TimesSuccessful string `gorm:"column:times_successful" json:"times_successful"`
+	Locked      string `gorm:"column:locked" json:"locked"`
+	GId         string `gorm:"column:gid" json:"gid"`
+	CreateTimes string `gorm:"column:create_times" json:"create_times"`
+	UpdateTimes string `gorm:"column:update_times" json:"update_times"`
+	LocalPath   string `gorm:"column:local_path" json:"local_path"`
+	Success     string `gorm:"column:success" json:"success"`
+	DiskPath    string `gorm:"column:disk_path" json:"disk_path"`
+	Drive       string `gorm:"column:drive" json:"drive"`
 }
 
-func GetAll() (ret []*FilSwan, err error) {
-	table := config.GetConfig().Mysql.Table
-	sqlx := `select  * from  ` + table + ` where file_active=0  limit 0,1`
+func GetAll(drive, table string) (ret []*FilSwan, err error) {
+	sqlx := `select  * from  ` + table + ` where file_active=0 AND  drive = '` + drive + `'  limit 0,5`
 	log.Debug(sqlx)
 	if err = orm.Eloquent.Raw(sqlx).Scan(&ret).Error; err != nil {
 		return
 	}
 	return
 }
-func UpdateSetDownload1(msg *FilSwan, gid string) (err error) { // 下载中
-	table := config.GetConfig().Mysql.Table
-	sqlx := ``
-	switch {
-	case config.GetConfig().Typeof.FilSwan:
-		sqlx = `UPDATE  ` + table + ` set  file_active=1 ,locked=1  ,gid='` + gid + `',create_times=now()   where data_cid='` + msg.DataCid + `'`
 
-	case config.GetConfig().Typeof.BiGd:
-		sqlx = `UPDATE  ` + table + ` set  file_active=1 ,locked=1  ,gid='` + gid + `',create_times=now()   where download_url='` + msg.DownloadUrl + `'`
-	}
+func UpdateSetDownload1(msg *FilSwan, gid, drive, table string) (err error) { // 下载中
+	sqlx := `UPDATE  ` + table + ` set  file_active=1 ,locked=1  ,gid='` + gid + `',create_times=now()   where  download_url='` + msg.DownloadUrl + `' AND  drive = '` + drive + `' `
 	log.Debug(sqlx)
 	if err = orm.Eloquent.Exec(sqlx).Error; err != nil {
 		return
@@ -50,17 +38,8 @@ func UpdateSetDownload1(msg *FilSwan, gid string) (err error) { // 下载中
 	return
 }
 
-func UpdateSetDownload2(msg *FilSwan, gid string, path string, size int64) (err error) {
-	table := config.GetConfig().Mysql.Table
-
-	sqlx := ``
-	switch {
-	case config.GetConfig().Typeof.FilSwan:
-		sqlx = `UPDATE  ` + table + `  set  file_active=2 ,locked=0 ,update_times=now() ,local_path='` + path + `' ,file_size=%d  where data_cid='` + msg.DataCid + `' AND gid = '` + gid + `'`
-
-	case config.GetConfig().Typeof.BiGd:
-		sqlx = `UPDATE  ` + table + ` set  file_active=2 ,locked=0 ,update_times=now() ,local_path='` + path + `' ,file_size=%d  where download_url='` + msg.DownloadUrl + `' AND gid = '` + gid + `'`
-	}
+func UpdateSetDownload2(msg *FilSwan, gid string, path, drive, table string, size int64) (err error) {
+	sqlx := `UPDATE  ` + table + ` set  file_active=2 ,locked=0 ,update_times=now() ,local_path='` + path + `' ,file_size=%d  where download_url='` + msg.DownloadUrl + `' AND gid = '` + gid + `' AND  drive = '` + drive + `'`
 	sqlx = fmt.Sprintf(sqlx, size)
 	log.Debug(sqlx)
 	if err = orm.Eloquent.Debug().Exec(sqlx).Error; err != nil {
@@ -69,16 +48,8 @@ func UpdateSetDownload2(msg *FilSwan, gid string, path string, size int64) (err 
 	return
 }
 
-func UpdateSetDownload1s(msg *FilSwan, gid string) (err error) { // 下载中
-	table := config.GetConfig().Mysql.Table
-	sqlx := ``
-	switch {
-	case config.GetConfig().Typeof.FilSwan:
-		sqlx = `UPDATE  ` + table + ` set  file_active=1  ,locked=1 , gid='` + gid + `',create_times=now()   where data_cid='` + msg.DataCid + `'`
-
-	case config.GetConfig().Typeof.BiGd:
-		sqlx = `UPDATE  ` + table + ` set  file_active=1  , locked=1  ,gid='` + gid + `',create_times=now()   where download_url='` + msg.DownloadUrl + `'`
-	}
+func UpdateSetDownload1s(msg *FilSwan, gid, drive, table string) (err error) { // 下载中
+	sqlx := `UPDATE  ` + table + ` set  file_active=1  , locked=1  ,gid='` + gid + `',create_times=now()   where download_url='` + msg.DownloadUrl + `' AND  drive = '` + drive + `'`
 	log.Debug(sqlx)
 	if err = orm.Eloquent.Exec(sqlx).Error; err != nil {
 		return
@@ -86,17 +57,8 @@ func UpdateSetDownload1s(msg *FilSwan, gid string) (err error) { // 下载中
 	return
 }
 
-func UpdateSetDownload2s(msg *FilSwan, gid string, path string, size int64) (err error) {
-	table := config.GetConfig().Mysql.Table
-
-	sqlx := ``
-	switch {
-	case config.GetConfig().Typeof.FilSwan:
-		sqlx = `UPDATE  ` + table + `  set  file_active=2 ,locked=0 ,update_times=now() ,local_path='` + path + `' ,file_size=%d    where data_cid='` + msg.DataCid + `' AND gid = '` + gid + `'`
-
-	case config.GetConfig().Typeof.BiGd:
-		sqlx = `UPDATE  ` + table + ` set  file_active=2 ,locked=0 ,update_times=now() ,local_path='` + path + `' ,file_size=%d   where download_url='` + msg.DownloadUrl + `' AND gid = '` + gid + `'`
-	}
+func UpdateSetDownload2s(msg *FilSwan, gid string, path, drive, table string, size int64) (err error) {
+	sqlx := `UPDATE  ` + table + ` set  file_active=2 ,locked=0 ,update_times=now() ,local_path='` + path + `' ,file_size=%d   where download_url='` + msg.DownloadUrl + `' AND gid = '` + gid + `' AND  drive = '` + drive + `'`
 	sqlx = fmt.Sprintf(sqlx, size)
 	log.Debug(sqlx)
 	if err = orm.Eloquent.Debug().Exec(sqlx).Error; err != nil {
@@ -105,10 +67,10 @@ func UpdateSetDownload2s(msg *FilSwan, gid string, path string, size int64) (err
 	return
 }
 
-func GetFindOne() (*FilSwan, error) {
-	table := config.GetConfig().Mysql.Table
+func GetFindOne(drive, table string) (*FilSwan, error) {
+
 	sk := FilSwan{}
-	sqlx := `select * from   ` + table + `  where file_active=0   limit 0,1`
+	sqlx := `select * from   ` + table + `  where file_active=0  AND  drive = '` + drive + `'   limit 0,1`
 	log.Debug(sqlx)
 	if err := orm.Eloquent.Raw(sqlx).Scan(&sk).Error; err != nil {
 		return nil, nil
@@ -116,9 +78,9 @@ func GetFindOne() (*FilSwan, error) {
 	return &sk, nil
 }
 
-func GeTGId() (ret []*FilSwan, err error) {
-	table := config.GetConfig().Mysql.Table
-	sqlx := `select  * from    ` + table + ` where locked=1 `
+func GeTGId(drive, table string) (ret []*FilSwan, err error) {
+
+	sqlx := `select  * from    ` + table + ` where locked=1 AND  drive = '` + drive + `' `
 	log.Debug(sqlx)
 	if err = orm.Eloquent.Raw(sqlx).Scan(&ret).Error; err != nil {
 		return
@@ -126,9 +88,9 @@ func GeTGId() (ret []*FilSwan, err error) {
 	return
 }
 
-func GeTLocked() (ret []*FilSwan, err error) {
-	table := config.GetConfig().Mysql.Table
-	sqlx := `select  * from    ` + table + ` where locked=1 `
+func GeTLocked(drive, table string) (ret []*FilSwan, err error) {
+
+	sqlx := `select  * from    ` + table + ` where locked=1 AND  drive = '` + drive + `' `
 	log.Debug(sqlx)
 	if err = orm.Eloquent.Raw(sqlx).Scan(&ret).Error; err != nil {
 		return
@@ -144,8 +106,8 @@ type Dw struct {
 	Successful  string `gorm:"column:success" json:"success"`
 }
 
-func GetCount() (ret []*Dw, err error) {
-	table := config.GetConfig().Mysql.Table
+func GetCount(table string) (ret []*Dw, err error) {
+
 	//sqlx := `select sum(skt) as downloading  ,sum(stk) as downloaded , sum(toal) total   from  (
 	//select  count(data_cid) as  skt ,0 as stk , 0 as toal  from   ` + table + ` where  locked=1
 	//union  all

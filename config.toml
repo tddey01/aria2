@@ -22,8 +22,6 @@ port = 3306
 dbname = "aria2"
 users = "root"
 passwd = "yungo2020!@"
-MaxIdleConn = 50
-MaxOpenConn =  100
 table = "filswan"
 enable = false
 
@@ -34,8 +32,8 @@ day = 7  #
 level = "DEBUG" # level  Debug
 
 [watch]
-enable = true
+enable = false
 
-[typeof]
-FilSwan = false # filswan  download enable  = true and  false or disable  = true and  false
-BiGd = true     # BiGd  download enable  = true and  false or disable  = true and  false
+[disk]
+drive = "2"
+

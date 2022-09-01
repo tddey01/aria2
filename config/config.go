@@ -15,16 +15,13 @@ type aria2 struct {
 }
 
 type mysql struct {
-	DBType      string `toml:"DbType"`
-	Host        string `toml:"host"`
-	Port        int    `toml:"port"`
-	DbName      string `toml:"dbname"`
-	DbUser      string `toml:"users"`
-	DbPasswd    string `toml:"passwd"`
-	MaxIdleConn int    `toml:"MaxIdleConn"`
-	MaxOpenConn int    `toml:"MaxOpenConn"`
-	Table       string `toml:"table"`
-	Enable      bool   `toml:"enable"`
+	DBType   string `toml:"DbType"`
+	Host     string `toml:"host"`
+	Port     int    `toml:"port"`
+	DbName   string `toml:"dbname"`
+	DbUser   string `toml:"users"`
+	DbPasswd string `toml:"passwd"`
+	Table    string `toml:"table"`
 }
 type logs struct {
 	MaxSize    int    `toml:"maxsize"`
@@ -37,23 +34,25 @@ type main struct {
 }
 
 type watch struct {
-	Enable bool `toml:"enable"`
+	Enable     bool   `toml:"enable"`
+	CorPid     string `toml:"corPid"`
+	CorpSecret string `toml:"corpSecret"`
+	AGenTid    int    `toml:"aGenTid"`
 }
 
 type Configuration struct {
-	Port    int    `toml:"port"`
-	Release bool   `toml:"release"`
-	Aria2   aria2  `toml:"aria2"`
-	Main    main   `toml:"main"`
-	Mysql   mysql  `toml:"mysql"`
-	Logs    logs   `toml:"logs"`
-	Watch   watch  `toml:"watch"`
-	Typeof  typeof `toml:"typeof"`
+	Port    int   `toml:"port"`
+	Release bool  `toml:"release"`
+	Aria2   aria2 `toml:"aria2"`
+	Main    main  `toml:"main"`
+	Mysql   mysql `toml:"mysql"`
+	Logs    logs  `toml:"logs"`
+	Watch   watch `toml:"watch"`
+	Disk    disk  `toml:"disk"`
 }
 
-type typeof struct {
-	FilSwan bool `toml:"FilSwan"`
-	BiGd    bool `toml:"BiGd"`
+type disk struct {
+	Drive string `toml:"drive"`
 }
 
 var config *Configuration
@@ -75,7 +74,7 @@ func requiredFieldsAreGiven(metaData toml.MetaData) bool {
 		{"mysql"},
 		{"logs"},
 		{"watch"},
-		{"typeof"},
+		{"disk"},
 
 		{"aria2", "aria2_download_dir"},
 		{"aria2", "aria2_host"},
@@ -91,10 +90,7 @@ func requiredFieldsAreGiven(metaData toml.MetaData) bool {
 		{"mysql", "dbname"},
 		{"mysql", "users"},
 		{"mysql", "passwd"},
-		{"mysql", "MaxIdleConn"},
-		{"mysql", "MaxOpenConn"},
 		{"mysql", "table"},
-		{"mysql", "enable"},
 
 		{"logs", "maxsize"},
 		{"logs", "backups"},
@@ -102,9 +98,11 @@ func requiredFieldsAreGiven(metaData toml.MetaData) bool {
 		{"logs", "level"},
 
 		{"watch", "enable"},
+		{"watch", "corPid"},
+		{"watch", "corpSecret"},
+		{"watch", "aGenTid"},
 
-		{"typeof", "FilSwan"},
-		{"typeof", "BiGd"},
+		{"disk", "drive"},
 	}
 
 	for _, v := range requiredFields {

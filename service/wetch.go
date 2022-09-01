@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/robfig/cron"
+	"github.com/tddey01/aria2/config"
 	"github.com/tddey01/aria2/model"
 	"github.com/tddey01/aria2/utils"
 	"strconv"
@@ -30,7 +31,7 @@ func BlockStartNew() {
 
 func BlockTotalCount() (err error) {
 	str := fmt.Sprintf(" %s", utils.TimeHMS())
-	datacount, err := model.GetCount()
+	datacount, err := model.GetCount(config.GetConfig().Mysql.Table)
 	if err != nil {
 		return err
 	}
@@ -50,7 +51,7 @@ func BlockTotalCount() (err error) {
 	restp := &Msg{
 		Touser:  "@all",
 		Msgtype: "text",
-		Agentid: 1000004,
+		Agentid: config.GetConfig().Watch.AGenTid,
 		Text: &Message{
 			Content: str,
 		},
@@ -64,7 +65,7 @@ func BlockTotalCount() (err error) {
 		return
 	}
 
-	if err = utils.SendMsg(resp); err != nil {
+	if err = utils.SendMsg(resp, config.GetConfig().Watch.CorPid, config.GetConfig().Watch.CorpSecret); err != nil {
 		log.Error(err.Error())
 		return
 	}
