@@ -228,6 +228,7 @@ func (aria2Service *Aria2Service) StartDownload(aria2Client *Aria2Client) {
 		}
 
 		if len(Locked1) >= config.GetConfig().Aria2.Aria2Task {
+			log.Info("超出任务最下载限制===================")
 			return
 		}
 		log.Info("开始下载")
