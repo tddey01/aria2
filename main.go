@@ -9,8 +9,6 @@ import (
 	"strconv"
 )
 
-const URL_HOST_GET_COMMON = "/common"
-
 func main() {
 	if len(os.Args) < 2 {
 		printUsage()
@@ -23,9 +21,6 @@ func main() {
 		printVersion()
 	case "daemon":
 		service.AdminOfflineDeal()
-		//if config.GetConfig().Watch.Enable {
-		//	service.BlockStartNewTotal3()
-		//}
 		createHttpServer()
 	default:
 		printUsage()

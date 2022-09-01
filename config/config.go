@@ -2,8 +2,6 @@ package config
 
 import (
 	"github.com/BurntSushi/toml"
-	"os"
-	"path/filepath"
 )
 
 type aria2 struct {
@@ -32,13 +30,6 @@ type logs struct {
 type main struct {
 	LogName string `toml:"LogName"`
 }
-
-//type watch struct {
-//	Enable     bool   `toml:"enable"`
-//	CorPid     string `toml:"corPid"`
-//	CorpSecret string `toml:"corpSecret"`
-//	AGenTid    int    `toml:"aGenTid"`
-//}
 
 type Configuration struct {
 	Port    int   `toml:"port"`
@@ -73,7 +64,7 @@ func requiredFieldsAreGiven(metaData toml.MetaData) bool {
 		{"main"},
 		{"mysql"},
 		{"logs"},
-		//{"watch"},
+
 		{"disk"},
 
 		{"aria2", "aria2_download_dir"},
@@ -97,11 +88,6 @@ func requiredFieldsAreGiven(metaData toml.MetaData) bool {
 		{"logs", "day"},
 		{"logs", "level"},
 
-		//{"watch", "enable"},
-		//{"watch", "corPid"},
-		//{"watch", "corpSecret"},
-		//{"watch", "aGenTid"},
-
 		{"disk", "drive"},
 	}
 
@@ -115,13 +101,7 @@ func requiredFieldsAreGiven(metaData toml.MetaData) bool {
 }
 
 func InitConfig() {
-	homedir, err := os.UserHomeDir()
-	if err != nil {
-		log.Fatal("Cannot get home directory.")
-	}
-
-	configFile := filepath.Join(homedir, "./.aria2/config.toml")
-
+	configFile := "./config.toml"
 	log.Debug("Your config file is:", configFile)
 
 	if metaData, err := toml.DecodeFile(configFile, &config); err != nil {
