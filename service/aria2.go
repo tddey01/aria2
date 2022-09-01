@@ -7,7 +7,6 @@ import (
 	"net/url"
 	"os"
 	"path/filepath"
-	"strconv"
 	"strings"
 	"sync"
 	"time"
@@ -166,12 +165,14 @@ func (aria2Service *Aria2Service) StartDownload4Deal(deal *model.FilSwan, aria2C
 		outFilename = strings.TrimPrefix(urlInfo.RawQuery, "filename=")
 		outFilename = filepath.Join(urlInfo.Path, outFilename)
 	}
-	outFilename = strings.TrimLeft(outFilename, "/")
-
-	today := time.Now()
-	timeStr := fmt.Sprintf("%d%02d", today.Year(), today.Month())
-	outDir := filepath.Join(aria2Service.DownloadDir, strconv.Itoa(0), timeStr)
-
+	_, outFilename = filepath.Split(outFilename)
+	outDir := strings.TrimSuffix(deal.DiskPath, "/")
+	filePath := outDir + "/" + outFilename
+	s := -1
+	if IsExist(filePath) {
+		log.Info(deal, &s, DEAL_STATUS_DOWNLOADED, filePath, outFilename+", the car file already exists, skip downloading it")
+		return
+	}
 	aria2Download := aria2Client.DownloadFile(deal.DownloadUrl, outDir, outFilename)
 	if err = model.UpdateSetDownload1(deal, aria2Download.Gid, Drive, Table); err != nil { //  1 4
 		log.Error("改状态失败")
@@ -260,4 +261,9 @@ func (aria2Service *Aria2Service) CheckDownloadStatus(aria2Client *Aria2Client) 
 		}
 		aria2Service.CheckDownloadStatus4Deal(aria2Client, deal, gid)
 	}
+}
+
+func IsExist(filePath string) bool {
+	_, err := os.Stat(filePath)
+	return err == nil || os.IsExist(err)
 }
