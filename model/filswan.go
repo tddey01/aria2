@@ -21,7 +21,7 @@ type FilSwan struct {
 }
 
 func GetAll(drive, table string) (ret []*FilSwan, err error) {
-	sqlx := `select  * from  ` + table + ` where file_active=0 AND  drive = '` + drive + `'  limit 0,5`
+	sqlx := `select  * from  ` + table + ` where file_active=0 AND  drive = '` + drive + `'  limit 0,20`
 	log.Debug(sqlx)
 	if err = orm.Eloquent.Raw(sqlx).Scan(&ret).Error; err != nil {
 		return

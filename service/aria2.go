@@ -221,7 +221,7 @@ func (aria2Service *Aria2Service) StartDownload(aria2Client *Aria2Client) {
 		log.Infof("当前任务大于：%d 停止接新任务", config.GetConfig().Aria2.Aria2Task)
 		return
 	}
-	for i := 1; i <= countDownloadingDeals; i++ {
+	for i := 1; i <= config.GetConfig().Aria2.Aria2Task-countDownloadingDeals; i++ {
 		Locked1, err1 := model.GeTLocked(Drive, Table)
 		if err1 != nil {
 			return
