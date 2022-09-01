@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"github.com/gin-gonic/gin"
+	"github.com/tddey01/aria2/config"
 	"github.com/tddey01/aria2/service"
 	"log"
 	"os"
@@ -62,7 +63,7 @@ func createHttpServer() {
 	//v1 := r.Group("/api/v1")
 	//routers.HostManager(v1.Group(URL_HOST_GET_COMMON))
 
-	err := r.Run(":" + strconv.Itoa(8888))
+	err := r.Run(":" + strconv.Itoa(config.GetConfig().Port))
 	if err != nil {
 		log.Fatal(err)
 	}
