@@ -29,8 +29,8 @@ func GetAll(drive, table string) (ret []*FilSwan, err error) {
 	return
 }
 
-func UpdateSetDownload1(msg *FilSwan, gid, drive, table string) (err error) { // 下载中
-	sqlx := `UPDATE  ` + table + ` set  file_active=1 ,locked=1  ,gid='` + gid + `',create_times=now()   where  download_url='` + msg.DownloadUrl + `' AND  drive = '` + drive + `' `
+func UpdateSetDownload1(msg *FilSwan, gid, drive, table, fileName string) (err error) { // 下载中
+	sqlx := `UPDATE  ` + table + ` set   file_name='` + fileName + `',  file_active=1 ,locked=1  ,gid='` + gid + `',create_times=now()   where  download_url='` + msg.DownloadUrl + `' AND  drive = '` + drive + `' `
 	log.Debug(sqlx)
 	if err = orm.Eloquent.Exec(sqlx).Error; err != nil {
 		return
@@ -40,6 +40,16 @@ func UpdateSetDownload1(msg *FilSwan, gid, drive, table string) (err error) { //
 
 func UpdateSetDownload2(msg *FilSwan, gid string, path, drive, table string, size int64) (err error) {
 	sqlx := `UPDATE  ` + table + ` set  file_active=2 ,locked=0 ,update_times=now() ,local_path='` + path + `' ,file_size=%d  where download_url='` + msg.DownloadUrl + `' AND gid = '` + gid + `' AND  drive = '` + drive + `'`
+	sqlx = fmt.Sprintf(sqlx, size)
+	log.Debug(sqlx)
+	if err = orm.Eloquent.Debug().Exec(sqlx).Error; err != nil {
+		return
+	}
+	return
+}
+
+func UpdateSetDownload3(msg *FilSwan, fileName, path, drive, table string, size int64) (err error) {
+	sqlx := `UPDATE  ` + table + ` set file_name='` + fileName + `', file_active=2 ,locked=0 ,update_times=now() ,local_path='` + path + `' ,file_size=%d  where download_url='` + msg.DownloadUrl + `'AND  drive = '` + drive + `'`
 	sqlx = fmt.Sprintf(sqlx, size)
 	log.Debug(sqlx)
 	if err = orm.Eloquent.Debug().Exec(sqlx).Error; err != nil {
