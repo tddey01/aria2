@@ -33,7 +33,7 @@ func aria2StartDownload() {
 		log.Info(">>>>>>>>>>>> Start...")
 		aria2Service.StartDownload(aria2Client)
 		log.Info(">>>>>>>>>>>>  Sleeping...")
-		time.Sleep(time.Second)
+		time.Sleep(time.Minute)
 	}
 }
 
@@ -42,7 +42,7 @@ func aria2CheckDownloadStatus() {
 		log.Info(">>>>>>>>>>>>  Start...")
 		aria2Service.CheckDownloadStatus(aria2Client)
 		log.Info(">>>>>>>>>>>>  Sleeping...")
-		time.Sleep(time.Second)
+		time.Sleep(time.Second * 30)
 	}
 }
 
