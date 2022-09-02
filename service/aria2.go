@@ -33,7 +33,7 @@ func aria2StartDownload() {
 		log.Info(">>>>>>>>>>>> Start...")
 		aria2Service.StartDownload(aria2Client)
 		log.Info(">>>>>>>>>>>>  Sleeping...")
-		time.Sleep(time.Minute)
+		time.Sleep(time.Second)
 	}
 }
 
@@ -42,7 +42,7 @@ func aria2CheckDownloadStatus() {
 		log.Info(">>>>>>>>>>>>  Start...")
 		aria2Service.CheckDownloadStatus(aria2Client)
 		log.Info(">>>>>>>>>>>>  Sleeping...")
-		time.Sleep(time.Minute)
+		time.Sleep(time.Second)
 	}
 }
 
@@ -205,6 +205,9 @@ func (aria2Service *Aria2Service) StartDownload4Deal(deal *model.FilSwan, aria2C
 }
 
 func (aria2Service *Aria2Service) StartDownload(aria2Client *Aria2Client) {
+	locked.RUnlock()
+	defer locked.Unlock()
+
 	Drive := config.GetConfig().Disk.Drive
 	Table := config.GetConfig().Mysql.Table
 	downloadingDeals, err := model.GetAll(Drive, Table)
