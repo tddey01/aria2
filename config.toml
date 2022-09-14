@@ -3,7 +3,6 @@ release = true              # when work in release mode: set this to true, other
 
 
 [aria2]
-aria2_download_dir = "/ipfs/"   # Directory where offline deal files will be downloaded for importing
 aria2_host = "127.0.0.1"  # Aria2 server address
 aria2_port = 6800         # Aria2 server port
 aria2_secret = "my_aria2_secret"  # Must be the same value as rpc-secure in aria2.conf
@@ -17,7 +16,7 @@ LogName = "./logs"
 
 [mysql]
 DbType = "mysql"
-host = "8.129.83.148"
+host = "127.0.0.1"
 port = 3306
 dbname = "aria2"
 users = "root"
@@ -32,12 +31,6 @@ backups = 10  # file backup 10 day
 day = 7  #
 level = "DEBUG" # level  Debug
 
-[watch]  # 企业微信机器人
-enable = false
-corPid = ""
-corpSecret = ""
-aGenTid =  000
 
-[disk]
-drive = "1"
+
 

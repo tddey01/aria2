@@ -18,7 +18,7 @@ var aria2Client *Aria2Client
 var aria2Service *Aria2Service
 
 func AdminOfflineDeal() {
-	aria2Service = GetAria2Service()
+
 	aria2Client = SetAndCheckAria2Config()
 
 	//logs.GetLogger().Info("swan token:", swanClient.SwanToken)
@@ -60,19 +60,7 @@ func SetAndCheckAria2Config() *Aria2Client {
 }
 
 type Aria2Service struct {
-	MinerFid    string
-	DownloadDir string
-}
-
-func GetAria2Service() *Aria2Service {
-	_, err := os.Stat(aria2Service.DownloadDir)
-	if err != nil {
-		log.Error(ERROR_LAUNCH_FAILED)
-		log.Error("Your download directory:", aria2Service.DownloadDir, " not exists.")
-		log.Fatal(INFO_ON_HOW_TO_CONFIG)
-	}
-
-	return aria2Service
+	MinerFid string
 }
 
 func (aria2Service *Aria2Service) CheckDownloadStatus4Deal(aria2Client *Aria2Client, deal *model.FilSwan, gid string) {
