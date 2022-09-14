@@ -8,7 +8,6 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
-	"sync"
 	"time"
 
 	"github.com/tddey01/aria2/utils"
@@ -17,7 +16,6 @@ import (
 var aria2Client *Aria2Client
 
 var aria2Service *Aria2Service
-var locked sync.RWMutex
 
 func AdminOfflineDeal() {
 	aria2Service = GetAria2Service()
@@ -47,15 +45,10 @@ func aria2CheckDownloadStatus() {
 }
 
 func SetAndCheckAria2Config() *Aria2Client {
-	aria2DownloadDir := config.GetConfig().Aria2.Aria2DownloadDir
+
 	aria2Host := config.GetConfig().Aria2.Aria2Host
 	aria2Port := config.GetConfig().Aria2.Aria2Port
 	aria2Secret := config.GetConfig().Aria2.Aria2Secret
-
-	if !utils.IsDirExists(aria2DownloadDir) {
-		err := fmt.Errorf("aria2 down load dir:%s not exits, please set config:aria2->aria2_download_dir", aria2DownloadDir)
-		log.Fatal(err)
-	}
 
 	if len(aria2Host) == 0 {
 		log.Fatal("please set config:aria2->aria2_host")
@@ -72,10 +65,6 @@ type Aria2Service struct {
 }
 
 func GetAria2Service() *Aria2Service {
-	aria2Service := &Aria2Service{
-		DownloadDir: config.GetConfig().Aria2.Aria2DownloadDir,
-	}
-
 	_, err := os.Stat(aria2Service.DownloadDir)
 	if err != nil {
 		log.Error(ERROR_LAUNCH_FAILED)
@@ -87,7 +76,7 @@ func GetAria2Service() *Aria2Service {
 }
 
 func (aria2Service *Aria2Service) CheckDownloadStatus4Deal(aria2Client *Aria2Client, deal *model.FilSwan, gid string) {
-	Drive := config.GetConfig().Disk.Drive
+
 	Table := config.GetConfig().Mysql.Table
 	aria2Status := aria2Client.GetDownloadStatus(gid)
 	if aria2Status == nil {
@@ -109,7 +98,7 @@ func (aria2Service *Aria2Service) CheckDownloadStatus4Deal(aria2Client *Aria2Cli
 	file := result.Files[0]
 	filePath := file.Path
 	fileSize := utils.GetInt64FromStr(file.Length)
-
+	Drive := deal.Drive
 	msg := fmt.Sprintf("current status:,%s,%s", result.Status, result.ErrorMessage)
 	log.Info(deal.DownloadUrl, "  ", deal.GId, "  ", msg)
 	switch result.Status {
@@ -149,7 +138,7 @@ func (aria2Service *Aria2Service) CheckDownloadStatus4Deal(aria2Client *Aria2Cli
 }
 
 func (aria2Service *Aria2Service) StartDownload4Deal(deal *model.FilSwan, aria2Client *Aria2Client) {
-	Drive := config.GetConfig().Disk.Drive
+
 	Table := config.GetConfig().Mysql.Table
 	log.Info(deal, "start downloading")
 	urlInfo, err := url.Parse(deal.DownloadUrl)
@@ -168,6 +157,7 @@ func (aria2Service *Aria2Service) StartDownload4Deal(deal *model.FilSwan, aria2C
 	_, outFilename = filepath.Split(outFilename)
 	outDir := strings.TrimSuffix(deal.DiskPath, "/")
 	filePath := outDir + "/" + outFilename
+	Drive := deal.Drive
 	s := -1
 	if IsExist(filePath) {
 		log.Info(deal, s, DEAL_STATUS_DOWNLOADED, filePath, outFilename+", the car file already exists, skip downloading it")
@@ -206,9 +196,8 @@ func (aria2Service *Aria2Service) StartDownload4Deal(deal *model.FilSwan, aria2C
 
 func (aria2Service *Aria2Service) StartDownload(aria2Client *Aria2Client) {
 
-	Drive := config.GetConfig().Disk.Drive
 	Table := config.GetConfig().Mysql.Table
-	downloadingDeals, err := model.GetAll(Drive, Table)
+	downloadingDeals, err := model.GetAll(Table)
 	if err != nil {
 		log.Error("获取错误")
 		return
@@ -220,7 +209,7 @@ func (aria2Service *Aria2Service) StartDownload(aria2Client *Aria2Client) {
 		return
 	}
 
-	Locked, err := model.GeTLocked(Drive, Table)
+	Locked, err := model.GeTLocked(Table)
 	if err != nil {
 		return
 	}
@@ -230,7 +219,7 @@ func (aria2Service *Aria2Service) StartDownload(aria2Client *Aria2Client) {
 		return
 	}
 	for i := 1; i <= config.GetConfig().Aria2.Aria2Task-countDownloadingDeals; i++ {
-		Locked1, err1 := model.GeTLocked(Drive, Table)
+		Locked1, err1 := model.GeTLocked(Table)
 		if err1 != nil {
 			return
 		}
@@ -240,7 +229,7 @@ func (aria2Service *Aria2Service) StartDownload(aria2Client *Aria2Client) {
 			return
 		}
 		log.Info("开始下载")
-		deal2Download, err := model.GetFindOne(Drive, Table) // 1  3
+		deal2Download, err := model.GetFindOne(Table) // 1  3
 		if err != nil {
 			log.Error(err)
 			break
@@ -256,9 +245,9 @@ func (aria2Service *Aria2Service) StartDownload(aria2Client *Aria2Client) {
 }
 
 func (aria2Service *Aria2Service) CheckDownloadStatus(aria2Client *Aria2Client) {
-	Drive := config.GetConfig().Disk.Drive
+
 	Table := config.GetConfig().Mysql.Table
-	downloadingDeals, err := model.GeTGId(Drive, Table)
+	downloadingDeals, err := model.GeTGId(Table)
 	if err != nil {
 		return
 	}

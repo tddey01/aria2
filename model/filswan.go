@@ -20,8 +20,8 @@ type FilSwan struct {
 	Drive       string `gorm:"column:drive" json:"drive"`
 }
 
-func GetAll(drive, table string) (ret []*FilSwan, err error) {
-	sqlx := `select  * from  ` + table + ` where file_active=0 AND  drive = '` + drive + `'  limit 0,1`
+func GetAll(table string) (ret []*FilSwan, err error) {
+	sqlx := `select  * from  ` + table + ` where file_active=0 AND  limit 0,1`
 	log.Debug(sqlx)
 	if err = orm.Eloquent.Raw(sqlx).Scan(&ret).Error; err != nil {
 		return
@@ -77,10 +77,10 @@ func UpdateSetDownload2s(msg *FilSwan, gid string, path, drive, table string, si
 	return
 }
 
-func GetFindOne(drive, table string) (*FilSwan, error) {
+func GetFindOne(table string) (*FilSwan, error) {
 
 	sk := FilSwan{}
-	sqlx := `select * from   ` + table + `  where file_active=0  AND  drive = '` + drive + `'   limit 0,1`
+	sqlx := `select * from   ` + table + `  where file_active=0     limit 0,1`
 	log.Debug(sqlx)
 	if err := orm.Eloquent.Raw(sqlx).Scan(&sk).Error; err != nil {
 		return nil, nil
@@ -88,9 +88,9 @@ func GetFindOne(drive, table string) (*FilSwan, error) {
 	return &sk, nil
 }
 
-func GeTGId(drive, table string) (ret []*FilSwan, err error) {
+func GeTGId(table string) (ret []*FilSwan, err error) {
 
-	sqlx := `select  * from    ` + table + ` where locked=1 AND  drive = '` + drive + `' `
+	sqlx := `select  * from    ` + table + ` where locked=1  `
 	log.Debug(sqlx)
 	if err = orm.Eloquent.Raw(sqlx).Scan(&ret).Error; err != nil {
 		return
@@ -98,9 +98,9 @@ func GeTGId(drive, table string) (ret []*FilSwan, err error) {
 	return
 }
 
-func GeTLocked(drive, table string) (ret []*FilSwan, err error) {
+func GeTLocked(table string) (ret []*FilSwan, err error) {
 
-	sqlx := `select  * from    ` + table + ` where locked=1 AND  drive = '` + drive + `' `
+	sqlx := `select  * from    ` + table + ` where locked=1  `
 	log.Debug(sqlx)
 	if err = orm.Eloquent.Raw(sqlx).Scan(&ret).Error; err != nil {
 		return

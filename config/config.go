@@ -5,11 +5,10 @@ import (
 )
 
 type aria2 struct {
-	Aria2DownloadDir string `toml:"aria2_download_dir"`
-	Aria2Host        string `toml:"aria2_host"`
-	Aria2Port        int    `toml:"aria2_port"`
-	Aria2Secret      string `toml:"aria2_secret"`
-	Aria2Task        int    `toml:"aria2_max_task"`
+	Aria2Host   string `toml:"aria2_host"`
+	Aria2Port   int    `toml:"aria2_port"`
+	Aria2Secret string `toml:"aria2_secret"`
+	Aria2Task   int    `toml:"aria2_max_task"`
 }
 
 type mysql struct {
@@ -38,8 +37,6 @@ type Configuration struct {
 	Main    main  `toml:"main"`
 	Mysql   mysql `toml:"mysql"`
 	Logs    logs  `toml:"logs"`
-	//Watch   watch `toml:"watch"`
-	Disk disk `toml:"disk"`
 }
 
 type disk struct {
@@ -65,9 +62,6 @@ func requiredFieldsAreGiven(metaData toml.MetaData) bool {
 		{"mysql"},
 		{"logs"},
 
-		{"disk"},
-
-		{"aria2", "aria2_download_dir"},
 		{"aria2", "aria2_host"},
 		{"aria2", "aria2_port"},
 		{"aria2", "aria2_secret"},
@@ -87,8 +81,6 @@ func requiredFieldsAreGiven(metaData toml.MetaData) bool {
 		{"logs", "backups"},
 		{"logs", "day"},
 		{"logs", "level"},
-
-		{"disk", "drive"},
 	}
 
 	for _, v := range requiredFields {
