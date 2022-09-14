@@ -142,7 +142,8 @@ func (aria2Service *Aria2Service) StartDownload4Deal(deal *model.FilSwan, aria2C
 		outFilename = strings.TrimPrefix(urlInfo.RawQuery, "filename=")
 		outFilename = filepath.Join(urlInfo.Path, outFilename)
 	}
-	_, outFilename = filepath.Split(outFilename)
+	//_, outFilename = filepath.Split(outFilename)
+	outFilename = strings.TrimLeft(outFilename, "/")
 	outDir := strings.TrimSuffix(deal.DiskPath, "/")
 	filePath := outDir + "/" + outFilename
 	Drive := deal.Drive
