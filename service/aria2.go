@@ -142,7 +142,7 @@ func (aria2Service *Aria2Service) StartDownload4Deal(deal *model.FilSwan, aria2C
 		outFilename = strings.TrimPrefix(urlInfo.RawQuery, "filename=")
 		outFilename = filepath.Join(urlInfo.Path, outFilename)
 	}
-	//_, outFilename = filepath.Split(outFilename)
+	_, outFilename1 := filepath.Split(outFilename)
 	outFilename = strings.TrimLeft(outFilename, "/")
 	outDir := strings.TrimSuffix(deal.DiskPath, "/")
 	filePath := outDir + "/" + outFilename
@@ -153,7 +153,7 @@ func (aria2Service *Aria2Service) StartDownload4Deal(deal *model.FilSwan, aria2C
 
 		file, _ := os.Stat(filePath)
 
-		err = model.UpdateSetDownload3(deal, outFilename, filePath, Drive, Table, file.Size())
+		err = model.UpdateSetDownload3(deal, outFilename1, filePath, Drive, Table, file.Size())
 		if err != nil {
 			return
 		}
