@@ -160,7 +160,7 @@ func (aria2Service *Aria2Service) StartDownload4Deal(deal *model.FilSwan, aria2C
 		return
 	}
 	aria2Download := aria2Client.DownloadFile(deal.DownloadUrl, outDir, outFilename)
-	if err = model.UpdateSetDownload1(deal, aria2Download.Gid, Drive, Table, outFilename); err != nil { //  1 4
+	if err = model.UpdateSetDownload1(deal, aria2Download.Gid, Drive, Table, outFilename1); err != nil { //  1 4
 		log.Error("改状态失败")
 		return
 	}

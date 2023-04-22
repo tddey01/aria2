@@ -28,7 +28,6 @@ func init() {
 			os.Stdin.Close()
 			os.Stdout.Close()
 			isDaemon = true
-			redirectStderr()
 			i := 1
 			os.Args = append(os.Args[:i], os.Args[i+1:]...) // 恢复参数位置
 			fmt.Println("Daemon Server Initializing...")
